@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in &middot; Skyworth Label Generator</title>
+
+<!-- The login page is the one thing served in the clear, so it is worth
+     locking down. 'wasm-unsafe-eval' is required and sufficient for the
+     Argon2 WASM module; script-src is otherwise 'self' only, which is why the
+     login logic lives in auth/login.js rather than in a <script> block here.
+     form-action 'none' because this form never posts anywhere - everything
+     happens locally, in this tab. -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'wasm-unsafe-eval';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data:;
+  connect-src 'self';
+  base-uri 'none';
+  form-action 'none';
+  frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#f3f7fd">
+
+<link rel="stylesheet" href="auth/shell.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <!-- The corporate wordmark, inlined rather than linked. Drawn as SVG text
+         for the reasons set out in assets/skyworth.svg, and inlined here so it
+         can take currentColor - an <img> has no parent to inherit from. -->
+    <svg class="wordmark" viewBox="0 0 196 30" role="img" aria-label="SKYWORTH">
+      <title>SKYWORTH</title>
+      <text x="0" y="23.5" textLength="140" lengthAdjust="spacingAndGlyphs"
+            font-family="Arial Black, Arial Bold, Helvetica Neue, Segoe UI, system-ui, sans-serif"
+            font-size="25" font-weight="900" letter-spacing="-0.4"
+            fill="currentColor">SKYWORTH</text>
+      <text x="150" y="24" textLength="46" lengthAdjust="spacingAndGlyphs"
+            font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans SC, SimHei, sans-serif"
+            font-size="25" font-weight="700" fill="currentColor">&#21019;&#32500;</text>
+    </svg>
+    <span class="rule" aria-hidden="true"></span>
+    <span class="badge" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 7.5h16M4 12h16M4 16.5h9"></path>
+      </svg>
+    </span>
+    <span class="appname">Skyworth Label Generator</span>
+  </div>
+</header>
+
+<main class="gate">
+  <div class="wrap grid">
+
+    <section class="intro">
+      <h1><span class="grad">Statutory Label Generator</span></h1>
+      <p class="lede">
+        Carton, device, MRP, pallet and RSN labels for every product family and
+        manufacturer, generated to the approved artwork.
+      </p>
+      <ul class="points">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="4" y="10.5" width="16" height="10" rx="2.4"></rect>
+            <path d="M7.7 10.5V7.1a4.3 4.3 0 0 1 8.6 0v3.4"></path>
+          </svg>
+          <span><b>Stored encrypted.</b> Signing in decrypts the generators in
+          this browser.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3 4 6.5v5.2c0 4.5 3.2 8.6 8 9.8 4.8-1.2 8-5.3 8-9.8V6.5L12 3Z"></path>
+          </svg>
+          <span><b>Nothing you type is sent anywhere.</b> Your password never
+          leaves this tab.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3.5 12h17M12 3.5c2.6 2.6 2.6 14.4 0 17M12 3.5c-2.6 2.6-2.6 14.4 0 17"></path>
+            <circle cx="12" cy="12" r="8.5"></circle>
+          </svg>
+          <span><b>English and &#31616;&#20307;&#20013;&#25991;.</b> Switch language at any
+          time; the label artwork never changes.</span>
+        </li>
+      </ul>
+    </section>
+
+    <form class="card" id="loginForm" autocomplete="off" novalidate>
+      <h2>Sign in</h2>
+      <p class="sub">Use the account issued to you.</p>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocapitalize="none"
+               autocorrect="off" spellcheck="false" autocomplete="username"
+               aria-describedby="status" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input id="password" name="password" type="password"
+                 autocomplete="current-password" aria-describedby="status" required>
+          <button type="button" id="peek" class="peek" aria-label="Show password"
+                  aria-pressed="false" tabindex="-1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"></path>
+              <circle cx="12" cy="12" r="2.6"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="go">
+        <span class="label">Sign in</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </form>
+
+  </div>
+</main>
+
+<script src="auth/argon2.umd.min.js"></script>
+<script src="auth/crypt.js"></script>
+<script src="auth/login.js"></script>
+</body>
+</html>
