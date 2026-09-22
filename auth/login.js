@@ -124,6 +124,23 @@
    * so the operator is told at the moment they arrive rather than after they
    * have typed a password and waited for it. */
 
+  /* Say why the last session ended, rather than presenting a bare login form
+     to somebody who was signed in a moment ago. */
+  function explainSignOut() {
+    var why = new URLSearchParams(location.search).get('signedout');
+    if (!why) return;
+    if (why === 'idle') {
+      setStatus('Signed out after 20 minutes of inactivity.' +
+                '<span class="hint">Sign in again to carry on.</span>', 'warn');
+    } else if (why === 'revoked') {
+      setStatus('Your access has been withdrawn.' +
+                '<span class="hint">This account was removed, or its password ' +
+                'was changed, by an administrator. Ask them for new details.</span>', 'warn');
+    } else if (why === 'manual') {
+      setStatus('Signed out.', 'info');
+    }
+  }
+
   function bootstrap() {
     /* Chrome exposes crypto.subtle only in a secure context, so on file:// or
        plain http it is simply undefined and every later call dies with an
@@ -185,7 +202,7 @@
         }
 
         ready = true;
-        setStatus('');
+        if (!new URLSearchParams(location.search).get('signedout')) setStatus('');
         setBusy(false);
         userEl.focus();
       })
@@ -346,6 +363,11 @@
       type: 'unlock',
       username: payload.d || payload.u,
       role: payload.r,
+      /* Handed to the service worker so the pages can later ask the published
+         account file whether this account still exists. Neither value is
+         secret - the id is a digest and the ciphertext is already public. */
+      slotId: slot.id,
+      slotC: slot.c,
       ckViewer: payload.k.v,
       ckAdmin: payload.k.a || null,
       saltViewer: await SkyCrypt.pathSalt(payload.k.v),
@@ -439,6 +461,7 @@
   /* --------------------------------------------------------------- start */
 
   btn.disabled = true;
+  explainSignOut();
   window.addEventListener('offline', function () {
     if (!busy) setStatus('This device is offline. Signing in needs a connection ' +
                          'the first time on each device.', 'warn');

@@ -69,6 +69,7 @@ const APP_PREFIX = 'app/';
 const PLAINTEXT = new Set([
   '', 'index.html', 'sw.js', 'config.json', 'keyslots.json',
   'auth/crypt.js', 'auth/argon2.umd.min.js', 'auth/login.js', 'auth/shell.css',
+  'auth/session.js',
   '.nojekyll', 'favicon.ico'
 ]);
 
@@ -121,6 +122,11 @@ async function getSession() {
     role:     stored.role,
     username: stored.username,
     expires:  stored.expires,
+    /* Carried so the page can ask the published account file whether this
+       account is still there. Neither is secret: an opaque id and the
+       ciphertext already published beside it. */
+    slotId:   stored.slotId || null,
+    slotC:    stored.slotC || null,
     keyViewer: await SkyCrypt.importContentKey(SkyCrypt.unb64(stored.ckViewer), ['decrypt']),
     keyAdmin:  stored.ckAdmin
       ? await SkyCrypt.importContentKey(SkyCrypt.unb64(stored.ckAdmin), ['decrypt'])
@@ -221,12 +227,33 @@ async function serveEncrypted(rel, sess) {
     const ct    = envelope.slice(13);
 
     try {
-      const plain = await SkyCrypt.decrypt(attempt.key, nonce, ct);
+      let plain = await SkyCrypt.decrypt(attempt.key, nonce, ct);
       tierMemo.set(rel, attempt.tier);
+
+      /* Give every decrypted PAGE a session script.
+       *
+       * The generator pages are byte-identical to the files in docs/ and must
+       * stay that way - it is why the canvas drawing a statutory label is the
+       * same canvas it always was. So none of them carries a tag for this, and
+       * it is added here instead: what the browser receives changes, what is
+       * on disk does not.
+       *
+       * Only HTML documents, and only the one tag. Nothing else about the
+       * document is touched. */
+      const type = contentType(rel);
+      if (type.startsWith('text/html')) {
+        const tag = '<script src="' + scopePath() + 'auth/session.js" defer></' + 'script>';
+        let html = new TextDecoder().decode(plain);
+        html = html.includes('<head')
+          ? html.replace(/<head([^>]*)>/i, (m) => m + tag)
+          : tag + html;
+        plain = new TextEncoder().encode(html);
+      }
+
       return new Response(plain, {
         status: 200,
         headers: {
-          'Content-Type': contentType(rel),
+          'Content-Type': type,
           // Decrypted bytes must never reach the HTTP cache — the whole point
           // is that they exist only for the length of a session.
           'Cache-Control': 'no-store, private',
@@ -319,6 +346,8 @@ self.addEventListener('message', (e) => {
         role:       msg.role,
         ckViewer:   msg.ckViewer,
         ckAdmin:    msg.ckAdmin || null,
+        slotId:     msg.slotId || null,
+        slotC:      msg.slotC || null,
         saltViewer: msg.saltViewer,
         saltAdmin:  msg.saltAdmin || null,
         expires:    Date.now() + SESSION_MS
@@ -361,7 +390,8 @@ self.addEventListener('message', (e) => {
   if (msg.type === 'whoami') {
     e.waitUntil((async () => {
       const s = await getSession();
-      reply(s ? { ok: true, username: s.username, role: s.role, expires: s.expires }
+      reply(s ? { ok: true, username: s.username, role: s.role, expires: s.expires,
+                  slotId: s.slotId, slotC: s.slotC }
               : { ok: false });
     })());
   }
