@@ -417,8 +417,12 @@
     var next = new URLSearchParams(location.search).get('next');
     /* Only ever navigate inside the application. An attacker-supplied ?next=
        must not be able to bounce a freshly signed-in operator off-site. */
+    /* Two applications sit behind this sign-in now, so the landing place is
+       the chooser rather than either one of them. A ?next= from a deep link
+       still wins - somebody who bookmarked a particular generator should land
+       on it, not be asked a question they have already answered. */
     var dest = (next && /^app\/[A-Za-z0-9._\/-]*$/.test(next) && next.indexOf('..') === -1)
-      ? next : 'app/';
+      ? next : 'app/home/';
 
     location.replace(dest);
   }
