@@ -149,6 +149,57 @@ function scopePath() {
   return new URL(self.registration.scope).pathname;   // e.g. '/labels/'
 }
 
+/* ---------------------------------------------------------------- the CSP */
+
+/* A fresh value per response. Predicting it is the only way an injected
+   <script> could claim the nonce, so it must not be derived from anything. */
+function newNonce() {
+  const b = crypto.getRandomValues(new Uint8Array(16));
+  return btoa(String.fromCharCode.apply(null, b)).replace(/=+$/, '');
+}
+
+/* WHY A HEADER AND NOT A <meta> TAG
+ *
+ * The sign-in shell carries its policy in a meta tag because GitHub Pages
+ * serves it and cannot be told to set a header. The generator pages are
+ * different: they are assembled here, so they can have a real header - and
+ * frame-ancestors, which is what stops this being framed by someone else's
+ * page, is IGNORED in a meta tag. The shell logs a console warning saying so.
+ *
+ * script-src names a nonce and does not include 'unsafe-inline'. That is only
+ * possible because the three inline onclick="download(...)" attributes were
+ * replaced with data-dl attributes wired up inside the page's own script: a
+ * nonce covers a block, and nothing covers a handler attribute.
+ *
+ * style-src still allows inline. The pages carry a <style> block and a dozen
+ * style attributes, and injected CSS cannot run code - it is a far smaller
+ * concern than script, and the shell already makes the same trade.
+ *
+ * data: appears in img-src and font-src because the label's JioType faces are
+ * embedded as data: URIs and the canvas is read back with toDataURL. blob: is
+ * there because every download here is made with URL.createObjectURL.
+ */
+function csp(nonce) {
+  return [
+    "default-src 'self'",
+    /* 'wasm-unsafe-eval' is here for the Validator, which decodes with a
+       WebAssembly build and will not compile without it. It permits
+       WebAssembly compilation only - it does NOT bring back eval() or
+       new Function() on JavaScript strings, which is why it is not simply
+       'unsafe-eval'. The sign-in shell allows the same thing for argon2. */
+    "script-src 'self' 'wasm-unsafe-eval' 'nonce-" + nonce + "'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob:",
+    "font-src 'self' data:",
+    "connect-src 'self'",
+    "worker-src 'self' blob:",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "form-action 'none'",
+    "frame-ancestors 'none'"
+  ].join('; ');
+}
+
 /* Path relative to the worker's scope, with directory requests resolved to
  * their index.html so that /af1/sgs/device/ finds the file it means. */
 function relativePath(url) {
@@ -241,25 +292,36 @@ async function serveEncrypted(rel, sess) {
        * Only HTML documents, and only the one tag. Nothing else about the
        * document is touched. */
       const type = contentType(rel);
+      const headers = {
+        'Content-Type': type,
+        // Decrypted bytes must never reach the HTTP cache — the whole point
+        // is that they exist only for the length of a session.
+        'Cache-Control': 'no-store, private',
+        'X-Content-Type-Options': 'nosniff'
+      };
+
       if (type.startsWith('text/html')) {
-        const tag = '<script src="' + scopePath() + 'auth/session.js" defer></' + 'script>';
+        const nonce = newNonce();
+        const tag = '<script nonce="' + nonce + '" src="' + scopePath() +
+                    'auth/session.js" defer></' + 'script>';
         let html = new TextDecoder().decode(plain);
         html = html.includes('<head')
           ? html.replace(/<head([^>]*)>/i, (m) => m + tag)
           : tag + html;
+
+        /* Every inline <script> on the page gets this response's nonce. The
+           tag added just above already carries it and has a src, so the
+           negative lookahead leaves it alone rather than giving it a second.
+           A generator page has exactly one inline block; the assertion is not
+           made here because a page with none must still be served. */
+        html = html.replace(/<script(?![^>]*\ssrc=)([^>]*)>/gi,
+                            (m, attrs) => '<script nonce="' + nonce + '"' + attrs + '>');
+
         plain = new TextEncoder().encode(html);
+        headers['Content-Security-Policy'] = csp(nonce);
       }
 
-      return new Response(plain, {
-        status: 200,
-        headers: {
-          'Content-Type': type,
-          // Decrypted bytes must never reach the HTTP cache — the whole point
-          // is that they exist only for the length of a session.
-          'Cache-Control': 'no-store, private',
-          'X-Content-Type-Options': 'nosniff'
-        }
-      });
+      return new Response(plain, { status: 200, headers });
     } catch {
       // Wrong key for this blob. Fall through and try the next tier.
     }

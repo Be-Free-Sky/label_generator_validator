@@ -181,6 +181,29 @@
         { shake: false });
     }
 
+    /* OPENED FROM A FOLDER RATHER THAN SERVED.
+     *
+     * Worth its own message, because every other symptom points the wrong way:
+     * the page renders, the styling is right, the fields are there, and the
+     * only thing that fails is fetch() - which on file:// is blocked outright.
+     * The generic handler below then says "the site may be mid-deployment",
+     * which sends you to look at the deployment when the deployment is fine.
+     *
+     * The generators themselves DO run from file://, deliberately. This shell
+     * cannot: the application is encrypted at rest, and the account file has to
+     * be read before anything can be decrypted. */
+    if (location.protocol === 'file:') {
+      return fail(
+        'This page has to be served, not opened from a folder.' +
+        '<span class="hint">The application is stored encrypted, and a browser ' +
+        'will not let a page opened with <code>file://</code> read the account ' +
+        'file it needs to unlock it.<br><br>' +
+        'Serve the folder and use the address it prints:<br>' +
+        '<code>node secure/serve.js</code> &rarr; <code>http://localhost:8080</code>' +
+        '</span>',
+        { shake: false });
+    }
+
     Promise.all([loadJson('config.json'), loadJson('keyslots.json')])
       .then(function (r) {
         config = r[0];
@@ -424,7 +447,11 @@
     var dest = (next && /^app\/[A-Za-z0-9._\/-]*$/.test(next) && next.indexOf('..') === -1)
       ? next : 'app/home/';
 
-    location.replace(dest);
+    /* Carry the fragment across. An approval request lives entirely in
+       #approve=, and 404.html leaves it on this page's own URL precisely so it
+       can be handed on here - drop it and the administrator arrives at an empty
+       label with no idea what they were sent. */
+    location.replace(dest + (location.hash || ''));
   }
 
   function postToWorker(worker, message) {

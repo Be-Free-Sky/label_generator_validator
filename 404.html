@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signing in…</title>
+<!--
+  WHY THIS FILE EXISTS
+
+  Everything under app/ is served by the service worker out of encrypted blobs;
+  none of those paths exist on disk. That is fine once the worker is installed,
+  and it is fine when a session has expired - the worker answers and sends you
+  to sign in.
+
+  It is not fine on a FIRST visit. Open an approval link in a browser that has
+  never loaded this site and there is no worker yet, so the request goes to the
+  server, which has no such file, and the person is looking at a bare 404 with
+  no idea what happened. That is exactly the case an approval link creates:
+  a link sent to somebody who has not opened the site in that browser before.
+
+  GitHub Pages serves this page for any path it does not have, and serve.js is
+  made to do the same, so the two behave alike.
+
+  THE FRAGMENT IS THE POINT. An approval request lives entirely in the #approve=
+  fragment, so bouncing to the sign-in page must not drop it. Fragments are
+  never sent to a server, but they survive a client-side navigation, so the path
+  goes in ?next= and the fragment is simply carried along; login.js puts them
+  back together after the password is accepted.
+-->
+<style>
+  body { font: 15px/1.6 system-ui, "Segoe UI", sans-serif; color: #334155;
+         padding: 48px 32px; max-width: 34rem; margin: 0 auto; }
+  h1   { font-size: 17px; color: #0a2c4d; margin: 0 0 8px; }
+  a    { color: #155e87; }
+  .q   { color: #64748b; font-size: 13.5px }
+</style>
+</head>
+<body>
+<h1 id="h">Taking you to sign in…</h1>
+<p id="p" class="q">If nothing happens, <a id="a" href="./">open the application</a> and sign in.</p>
+<script>
+(function () {
+  'use strict';
+
+  var p = location.pathname;
+
+  /* The site root is whatever sits above app/. On GitHub Pages that includes
+     the repository name, so it cannot be assumed to be "/". */
+  var m = p.match(/^(.*?\/)app\//);
+  var root = m ? m[1] : p.replace(/[^\/]*$/, '');
+
+  document.getElementById('a').setAttribute('href', root);
+
+  if (!m) {
+    /* Not an application path at all - a genuinely missing page. */
+    document.getElementById('h').textContent = 'Not found';
+    document.getElementById('p').innerHTML =
+      'That page does not exist. <a href="' + root + '">Open the application</a>.';
+    return;
+  }
+
+  var next = p.slice(root.length);          // e.g. app/af1/sky/carton/index.html
+  /* index.html is how a person pastes it; the worker serves the directory. */
+  next = next.replace(/index\.html$/, '');
+
+  location.replace(root + '?next=' + encodeURIComponent(next) + (location.hash || ''));
+})();
+</script>
+</body>
+</html>
