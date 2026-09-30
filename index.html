@@ -106,6 +106,27 @@
   </div>
 </main>
 
+<!-- The corporate wordmark, bottom-left. It was in the top bar until that bar
+     came off this page, which left the sign-in page with no mark at all.
+     Inlined rather than linked: drawn as SVG text for the reasons set out in
+     assets/skyworth.svg, and inline so it can take currentColor - an <img> has
+     no parent to inherit from. Nothing here is fetched, so the page's CSP is
+     unchanged. -->
+<footer class="brandfoot">
+  <div class="wrap">
+    <svg class="wordmark" viewBox="0 0 196 30" role="img" aria-label="SKYWORTH 创维">
+      <title>SKYWORTH 创维</title>
+      <text x="0" y="23.5" textLength="140" lengthAdjust="spacingAndGlyphs"
+            font-family="Arial Black, Arial Bold, Helvetica Neue, Segoe UI, system-ui, sans-serif"
+            font-size="25" font-weight="900" letter-spacing="-0.4"
+            fill="currentColor">SKYWORTH</text>
+      <text x="150" y="24" textLength="46" lengthAdjust="spacingAndGlyphs"
+            font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans SC, SimHei, sans-serif"
+            font-size="25" font-weight="700" fill="currentColor">&#21019;&#32500;</text>
+    </svg>
+  </div>
+</footer>
+
 <script src="auth/argon2.umd.min.js"></script>
 <script src="auth/crypt.js"></script>
 <script src="auth/login.js"></script>

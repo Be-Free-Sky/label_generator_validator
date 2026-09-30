@@ -192,9 +192,96 @@
 
   function bump() { last = Date.now(); if (warnEl) warnEl.classList.remove('on'); }
 
+  /* ------------------------------------------------ the room the bar takes
+   *
+   * The bar is fixed to the bottom-right corner, so on a page scrolled to its
+   * end it sits over the last lines of that page's footer. Footers used to
+   * guess how much room to leave with a fixed number - and the bar is 64px
+   * tall on a desktop but 80px on a phone, where it wraps onto two rows. The
+   * guesses were wrong: measured, the portal hid a footer line under the bar at
+   * every desktop width, and release notes hid five lines on a phone.
+   *
+   * So the bar says how much room it takes, as --sky-bar-space on <html>: the
+   * distance from the bottom of the window to its top edge, plus a small gap.
+   * A footer reserves exactly that with padding-bottom: var(--sky-bar-space).
+   *
+   * A variable changes nothing on its own - only a page that asks for it is
+   * affected - which keeps this file out of the pages' layout, as the note at
+   * the top of the file requires. It stays current as the bar changes size:
+   * when it wraps on a narrow window, and when the inactivity warning opens
+   * above it. */
+  function publishSpace() {
+    if (!host) return;
+    var r = host.getBoundingClientRect();
+    if (!r.height) return;
+    var space = Math.ceil(window.innerHeight - r.top) + 10;
+    document.documentElement.style.setProperty('--sky-bar-space', space + 'px');
+  }
+
+  /* ----------------------------------------------------------- integrity
+   *
+   * A TRIPWIRE, NOT A WALL. Anyone can change what runs in their own browser;
+   * no page can prevent that. What this catches is the obvious route to an
+   * unapproved label: opening the console and replacing the function that
+   * checks the approval before a file is made.
+   *
+   * The functions that matter are captured the moment this script runs, and
+   * compared by IDENTITY - the same function object, not the same text:
+   *   download()        the generator's own gate, called by every Download
+   *                     button, and a plain global, so it CAN be replaced
+   *   Approval          frozen and non-writable already; watched anyway, so a
+   *                     future change that loosened it would still be caught
+   * If either is no longer the original, the session ends.
+   *
+   * It is checked on EVERY click, in the capture phase at window level, so it
+   * runs before any button's own handler - replace the gate and then press
+   * Download, and the press never arrives. And every two seconds regardless,
+   * so a replacement is caught even if nothing is pressed.
+   *
+   * Only what exists is watched. The validator, the portal and the landing page
+   * have neither function, so on those pages this does nothing at all - and
+   * cannot sign anyone out by mistake. No page reassigns download() itself
+   * (checked across all thirty), so an honest session never trips it.
+   *
+   * What it does NOT stop, stated plainly: someone who writes fresh code that
+   * never touches these functions, or who blocks this script from loading.
+   * The real control is the signed approval, which an edited page cannot
+   * forge. This raises the cost of the easy attempt; it is not a guarantee. */
+  var watched = null;
+
+  function snapshot() {
+    var w = {};
+    if (typeof window.download === 'function') w.download = window.download;
+    var A = window.Approval;
+    if (A) { w.Approval = A; w.ok = A.ok; w.gate = A.gate; }
+    return Object.keys(w).length ? w : null;
+  }
+
+  function tampered() {
+    if (!watched) return '';
+    if (watched.download && window.download !== watched.download) return 'download';
+    if (watched.Approval) {
+      var A = window.Approval;
+      if (A !== watched.Approval || !A || A.ok !== watched.ok || A.gate !== watched.gate) {
+        return 'approval';
+      }
+    }
+    return '';
+  }
+
+  function guard(ev) {
+    if (ended || !tampered()) return;
+    if (ev) { ev.preventDefault(); ev.stopImmediatePropagation(); }
+    signOut('tampered');
+  }
+
   /* ------------------------------------------------------------------ boot */
 
   async function boot() {
+    /* Before anything is awaited, so the window in which the page could be
+       changed before its originals are recorded is as small as it can be. */
+    watched = snapshot();
+
     try {
       var who = await ask('whoami');
       if (!who || !who.ok) return;        // not signed in; the SW will redirect
@@ -213,9 +300,19 @@
       label.appendChild(document.createTextNode(' · ' + me.role));
     }
 
+    /* The label has its text now, so the bar has its real size. */
+    publishSpace();
+    window.addEventListener('resize', publishSpace);
+    if (typeof ResizeObserver === 'function') new ResizeObserver(publishSpace).observe(host);
+
     ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) {
       window.addEventListener(ev, bump, { passive: true });
     });
+
+    if (watched) {
+      window.addEventListener('click', guard, true);   // capture: before any button
+      setInterval(guard, 2000);
+    }
 
     var lastCheck = 0;
     setInterval(async function () {

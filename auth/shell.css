@@ -185,6 +185,14 @@ input.wrong:focus{border-color:var(--danger);box-shadow:0 0 0 4px rgba(190,18,60
   40%,60%{transform:translateX(5px)}
 }
 
+/* ------------------------------ brand foot ------------------------------ */
+
+/* The wordmark, bottom-left, on the same left edge as the heading. .gate is
+   flex:1, so this sits at the foot of the window and the page still fits one
+   screen; on a short one it simply follows the form. */
+.brandfoot{position:relative;z-index:1;padding:0 0 clamp(22px,4vh,40px)}
+.brandfoot .wordmark{height:clamp(24px,2.1vw,30px)}
+
 /* ------------------------------ responsive ------------------------------ */
 
 @media (max-width:940px){

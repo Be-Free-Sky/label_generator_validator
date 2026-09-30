@@ -138,6 +138,10 @@
                 'was changed, by an administrator. Ask them for new details.</span>', 'warn');
     } else if (why === 'manual') {
       setStatus('Signed out.', 'info');
+    } else if (why === 'tampered') {
+      setStatus('Signed out: the page was changed in the browser.' +
+                '<span class="hint">Labels can only be produced by the application ' +
+                'as it is published. Sign in again to carry on.</span>', 'warn');
     }
   }
 
