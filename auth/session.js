@@ -105,7 +105,13 @@
       'box-shadow:0 4px 18px rgba(11,27,58,.14)}',
       '.warn.on{display:flex}',
       '.warn button{background:#fff;color:#8a5209;border:1px solid #fde68a;',
-      'box-shadow:none;font-weight:700}'
+      'box-shadow:none;font-weight:700}',
+      /* Home is secondary: white with navy ink, so it can never be mistaken for
+         Sign out, which ends the session and is the one that must stand out. */
+      '.home{background:#fff;color:#0a2c4d;border:1px solid #cfe0f1;box-shadow:none;',
+      'display:inline-flex;align-items:center;gap:6px;padding:7px 13px 7px 11px}',
+      '.home:hover{background:#eef5fc;filter:none}',
+      '.home svg{width:15px;height:15px}'
     ].join('');
 
     var wrap = document.createElement('div');
@@ -122,6 +128,29 @@
 
     var bar = document.createElement('div');
     bar.className = 'bar';
+
+    /* HOME - back to the landing page, where the generator and the validator
+       are chosen. It lives in this bar because the bar is on EVERY page: the
+       thirty generators, the portal and the validator alike. Putting it in each
+       page's own header would have meant editing the validator's code, which is
+       merged as-is, and the statutory generator pages, which are kept
+       byte-identical. Hidden on the landing page itself, where it would lead
+       nowhere. */
+    var onHome = /\/app\/home\/?(index\.html)?$/.test(location.pathname);
+    if (!onHome) {
+      var home = document.createElement('button');
+      home.type = 'button';
+      home.className = 'home';
+      home.setAttribute('aria-label', 'Home - choose the generator or the validator');
+      home.title = 'Home - switch between the generator and the validator';
+      home.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10v9.5h13V10"></path></svg>' +
+        '<span>Home</span>';
+      home.onclick = function () { location.href = root + 'app/home/'; };
+      bar.appendChild(home);
+    }
+
     label = document.createElement('span');
     label.className = 'who';
     var out = document.createElement('button');

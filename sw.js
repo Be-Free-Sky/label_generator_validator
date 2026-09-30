@@ -179,6 +179,36 @@ function newNonce() {
  * embedded as data: URIs and the canvas is read back with toDataURL. blob: is
  * there because every download here is made with URL.createObjectURL.
  */
+/* THE VALIDATOR GETS A DIFFERENT POLICY, AND THIS IS WHY.
+ *
+ * The strict policy below broke it. The validator carries its text reader
+ * (Tesseract) inline, and starts it by creating a <script> element at run time
+ * and setting its text - a runtime inline script with no nonce, which is
+ * precisely what a nonce policy exists to refuse. So Tesseract never loaded,
+ * nothing on the label was read as text, and a PDF that the standalone
+ * validator reads in full came back as "the text reader could not be loaded".
+ *
+ * The standalone validator - the version that works, and the one this is meant
+ * to be merged as-is - ran with no CSP at all. Its code is not changed to suit
+ * this wrapper. Instead it gets only the directives that cannot touch what its
+ * scripts do:
+ *
+ *   frame-ancestors 'none'   nobody else's page may frame it (clickjacking)
+ *   object-src 'none'        no plugins
+ *   base-uri 'none'          no <base> tag can redirect its relative URLs
+ *
+ * With no default-src and no script-src, scripts, workers, WebAssembly, blob:
+ * and data: all behave exactly as they did standalone. Tightening this further
+ * means changing the validator's own code first, which is not to be done
+ * without being asked. */
+function isValidator(rel) {
+  return /^validator\//.test(String(rel || ''));
+}
+
+function validatorCsp() {
+  return ["frame-ancestors 'none'", "object-src 'none'", "base-uri 'none'"].join('; ');
+}
+
 function csp(nonce) {
   return [
     "default-src 'self'",
@@ -318,7 +348,7 @@ async function serveEncrypted(rel, sess) {
                             (m, attrs) => '<script nonce="' + nonce + '"' + attrs + '>');
 
         plain = new TextEncoder().encode(html);
-        headers['Content-Security-Policy'] = csp(nonce);
+        headers['Content-Security-Policy'] = isValidator(rel) ? validatorCsp() : csp(nonce);
       }
 
       return new Response(plain, { status: 200, headers });
