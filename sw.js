@@ -69,7 +69,7 @@ const APP_PREFIX = 'app/';
 const PLAINTEXT = new Set([
   '', 'index.html', 'sw.js', 'config.json', 'keyslots.json',
   'auth/crypt.js', 'auth/argon2.umd.min.js', 'auth/login.js', 'auth/shell.css',
-  'auth/session.js',
+  'auth/session.js', 'auth/guard.js',
   '.nojekyll', 'favicon.ico'
 ]);
 
@@ -332,8 +332,13 @@ async function serveEncrypted(rel, sess) {
 
       if (type.startsWith('text/html')) {
         const nonce = newNonce();
+        /* guard.js beside it: the brand on the page, sealed against editing
+           in the browser. Injected for the same reason session.js is - no
+           page carries a tag for it, so none of them changes. */
         const tag = '<script nonce="' + nonce + '" src="' + scopePath() +
-                    'auth/session.js" defer></' + 'script>';
+                    'auth/session.js" defer></' + 'script>' +
+                    '<script nonce="' + nonce + '" src="' + scopePath() +
+                    'auth/guard.js" defer></' + 'script>';
         let html = new TextDecoder().decode(plain);
         html = html.includes('<head')
           ? html.replace(/<head([^>]*)>/i, (m) => m + tag)
