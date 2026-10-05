@@ -5,11 +5,9 @@
  * copies that file here from docs/assets/ in the clear, because this page
  * loads before anyone has a key.
  *
- * The page is one decision - sign in - so it is the reference sites' hero
- * (CLAUDE.md, UI rules): the product's name big in Sora on the light ground
- * with its drafting grid, and one card holding the form, its accent bar
- * across the top. The generator pages carry their own styling and are
- * untouched by this file.
+ * The page is one decision - sign in - so it is the product's name on the
+ * brand ground, and a single glass pane holding the form. The generator pages
+ * carry their own styling and are untouched by this file.
  */
 
 *{box-sizing:border-box}
@@ -31,14 +29,14 @@ body{
    As a flex item the .wrap would not shrink below its content - flex items
    default to min-width:auto - so a large headline pushes the grid wider than
    the window and both columns run off the edges. */
-.gate{position:relative;z-index:1;isolation:isolate;flex:1;padding:clamp(34px,6vh,72px) 0 72px}
+.gate{position:relative;z-index:1;flex:1;padding:clamp(34px,6vh,72px) 0 72px}
 
 .grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,430px);
       gap:clamp(32px,5vw,80px);align-items:center;min-width:0}
 .intro{min-width:0}
 
-h1{margin:0;font-family:var(--ui-display);font-weight:800;letter-spacing:-.045em;line-height:.98;
-   font-size:clamp(42px,5.6vw,74px);color:var(--ui-navy)}
+h1{margin:0;font-weight:700;letter-spacing:-.035em;line-height:1.03;
+   font-size:clamp(42px,5.8vw,76px);color:var(--ui-navy)}
 
 /* The gradient over a solid colour, so the words never vanish if a browser
    declines the clip. */
@@ -46,33 +44,30 @@ h1{margin:0;font-family:var(--ui-display);font-weight:800;letter-spacing:-.045em
       -webkit-background-clip:text;background-clip:text;
       -webkit-text-fill-color:transparent;color:var(--ui-navy)}
 
-.lede{margin:24px 0 0;font-size:clamp(16.5px,1.5vw,19px);line-height:1.75;
-      color:var(--ui-ink-2);max-width:46ch}
+.lede{margin:20px 0 0;font-size:clamp(16.5px,1.6vw,20px);line-height:1.6;
+      color:var(--ui-ink-3);max-width:46ch}
 
 .points{list-style:none;margin:30px 0 0;padding:0;display:flex;
         flex-direction:column;gap:14px}
-.points li{display:flex;align-items:center;gap:16px;font-size:15.5px;
-           color:var(--ui-ink-2);line-height:1.55}
-/* Each icon in the reference's icon tile - a cyan-to-sky tint with a cyan
-   edge - so the three read as a set. */
-.points svg{width:42px;height:42px;flex:none;padding:10px;border-radius:12px;
-            color:var(--ui-accent-ink);
-            background:linear-gradient(150deg,rgba(1,138,190,.12),rgba(151,202,219,.10)),#fff;
-            border:1px solid rgba(1,138,190,.2)}
-.points b{color:var(--ui-ink);font-weight:600}
+.points li{display:flex;align-items:flex-start;gap:14px;font-size:15.5px;
+           color:var(--ui-ink-3);line-height:1.55}
+/* Each icon in a small tinted tile, so the three read as a set. */
+.points svg{width:34px;height:34px;flex:none;padding:7px;border-radius:10px;
+            color:var(--ui-accent-ink);background:rgba(255,255,255,.7);
+            box-shadow:var(--ui-glass-edge)}
+.points b{color:var(--ui-ink-2);font-weight:600}
 
 /* --------------------------------- card --------------------------------- */
 
-/* The form on the reference's card: white, a navy hairline, 24px corners,
-   and its accent bar - drawn in for good here, since the form is the one
-   thing on the page to act on. */
-.card{position:relative;overflow:hidden;background:var(--ui-surface);
-      border:1px solid var(--ui-line);border-radius:var(--ui-r-card);padding:36px 34px 30px;
-      display:flex;flex-direction:column;box-shadow:var(--ui-shadow-4)}
-.card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
-      background:var(--ui-grad-accent)}
+/* The form, on glass: the brand ground shows through, the edge and the lift
+   come from the tokens. */
+.card{position:relative;background:var(--ui-glass-bg);
+      -webkit-backdrop-filter:var(--ui-glass-blur);backdrop-filter:var(--ui-glass-blur);
+      border-radius:var(--ui-r-card);padding:34px 34px 30px;
+      display:flex;flex-direction:column;
+      box-shadow:var(--ui-glass-edge),var(--ui-shadow-3)}
 
-h2{margin:0;font-family:var(--ui-display);font-size:26px;font-weight:700;letter-spacing:-.03em;color:var(--ui-ink)}
+h2{margin:0;font-size:26px;font-weight:650;letter-spacing:-.025em;color:var(--ui-heading)}
 .sub{margin:6px 0 26px;font-size:15.5px;color:var(--ui-ink-3)}
 
 /* -------------------------------- fields -------------------------------- */
@@ -82,10 +77,10 @@ h2{margin:0;font-family:var(--ui-display);font-size:26px;font-weight:700;letter-
 .field label{font-size:13.5px;font-weight:600;color:var(--ui-ink-2);margin-bottom:7px}
 
 input{font-family:inherit;font-size:16px;color:var(--ui-ink);padding:13px 15px;
-      width:100%;border:1px solid var(--ui-line-2);border-radius:var(--ui-r-sm);
+      width:100%;border:1px solid var(--ui-line-2);border-radius:var(--ui-r-ctrl);
       background:var(--ui-surface);box-shadow:var(--ui-shadow-1);
-      transition:border-color var(--ui-hover) var(--ui-ease),box-shadow var(--ui-hover) var(--ui-ease)}
-input:hover{border-color:rgba(1,138,190,.45)}
+      transition:border-color var(--ui-hover) ease,box-shadow var(--ui-hover) ease}
+input:hover{border-color:rgba(11,29,48,.26)}
 input:focus{outline:none;border-color:var(--ui-accent);box-shadow:var(--ui-ring)}
 /* Marks the field at fault after a failure, without shouting. */
 input.wrong{border-color:var(--ui-err-line);background:#fffbfb}
@@ -106,16 +101,14 @@ input.wrong:focus{border-color:var(--ui-err);box-shadow:0 0 0 3px rgba(180,35,44
 
 /* -------------------------------- button -------------------------------- */
 
-/* The reference's primary button: a pill in the display face, on the deep
-   gradient, with the cyan glow under it. */
-.go{position:relative;margin-top:12px;min-height:54px;font-family:var(--ui-display);font-size:16px;
-    font-weight:600;letter-spacing:-.01em;color:#fff;padding:15px 28px;border:0;
-    border-radius:var(--ui-r-pill);cursor:pointer;background:var(--ui-gradient);
-    box-shadow:var(--ui-glow);
-    transition:transform var(--ui-hover) var(--ui-ease),filter var(--ui-hover) var(--ui-ease),
-               box-shadow var(--ui-hover) var(--ui-ease)}
+.go{position:relative;margin-top:10px;font-family:inherit;font-size:16px;
+    font-weight:600;letter-spacing:-.005em;color:#fff;padding:15px 22px;border:0;
+    border-radius:var(--ui-r-ctrl);cursor:pointer;background:var(--ui-gradient);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18),var(--ui-shadow-press);
+    transition:transform var(--ui-press) var(--ui-ease-out),filter var(--ui-hover) ease,
+               box-shadow var(--ui-hover) ease}
 /* The press: it gives the moment it is pressed, and comes back quickly. */
-.go:active:not(:disabled){transform:scale(.97);transition-duration:var(--ui-press)}
+.go:active:not(:disabled){transform:scale(.97)}
 .go:disabled{opacity:.6;cursor:default;box-shadow:none}
 
 /* A spinner that turns quickly reads as a faster sign-in than a slow one. */
@@ -127,8 +120,7 @@ input.wrong:focus{border-color:var(--ui-err);box-shadow:0 0 0 3px rgba(180,35,44
 
 @media (hover:hover) and (pointer:fine){
   .peek:hover{color:var(--ui-accent-ink);background:var(--ui-accent-tint)}
-  .go:hover:not(:disabled){transform:translateY(-2px);box-shadow:var(--ui-glow-hover);filter:brightness(1.06)}
-  .go:active:not(:disabled){transform:scale(.97)}
+  .go:hover:not(:disabled){filter:brightness(1.08)}
 }
 
 /* -------------------------------- status -------------------------------- */
@@ -140,14 +132,14 @@ input.wrong:focus{border-color:var(--ui-err);box-shadow:0 0 0 3px rgba(180,35,44
 /* Three weights of message, because they mean different things: something you
    typed, something that will pass on its own, something genuinely broken. */
 .status.error,.status.warn,.status.info{
-  text-align:left;padding:12px 14px;border-radius:var(--ui-r-sm);
+  text-align:left;padding:12px 14px;border-radius:var(--ui-r-ctrl);
   border:1px solid;font-weight:500}
 .status.error{color:var(--ui-err);  background:var(--ui-err-tint);  border-color:var(--ui-err-line)}
 .status.warn {color:var(--ui-warn); background:var(--ui-warn-tint); border-color:var(--ui-warn-line)}
 .status.info {color:var(--ui-ok);   background:var(--ui-ok-tint);   border-color:var(--ui-ok-line)}
 .status b{font-weight:650}
 .status .hint{display:block;margin-top:6px;font-weight:400;opacity:.92;font-size:13.5px}
-.status code{font-family:var(--ui-mono);font-size:12px;background:rgba(2,69,122,.06);
+.status code{font-family:var(--ui-mono);font-size:12px;background:rgba(11,29,48,.06);
              border-radius:6px;padding:2px 7px;display:inline-block;margin-top:5px;
              word-break:break-all}
 
@@ -193,5 +185,5 @@ input.wrong:focus{border-color:var(--ui-err);box-shadow:0 0 0 3px rgba(180,35,44
 @media (prefers-reduced-motion:reduce){
   .spinner{animation-duration:2.4s}
   .card.nope{animation:none}
-  .go:active:not(:disabled),.go:hover:not(:disabled){transform:none}
+  .go:active:not(:disabled){transform:none}
 }
