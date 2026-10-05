@@ -300,7 +300,14 @@ async function serveEncrypted(rel, sess) {
 
   for (const attempt of attempts) {
     const id = await SkyCrypt.pathId(rel, attempt.salt);
-    const res = await fetch(scopePath() + 'e/' + id + '.enc', { cache: 'no-store' });
+    /* 'no-cache', not 'no-store'. These are CIPHERTEXT - the same bytes anyone
+       can download from the public repository - so letting the browser keep
+       them exposes nothing; the decrypted response is still marked no-store
+       below and never reaches a cache. 'no-cache' revalidates every time, so a
+       deploy is seen at once (a 304 when nothing changed, the new file when
+       something did). With 'no-store' every page opened downloaded its whole
+       blob again: 10.6 MB for the validator, on every visit. */
+    const res = await fetch(scopePath() + 'e/' + id + '.enc', { cache: 'no-cache' });
     if (!res.ok) continue;
 
     const envelope = new Uint8Array(await res.arrayBuffer());

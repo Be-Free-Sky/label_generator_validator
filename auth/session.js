@@ -108,7 +108,7 @@
          where "Sign out" used to break onto two lines. */
       'button{font:inherit;font-size:13px;font-weight:600;cursor:pointer;flex:none;',
       'white-space:nowrap;border-radius:999px;padding:8px 15px;border:0;color:#fff;',
-      'background:var(--ui-gradient,linear-gradient(118deg,#0b2e6f,#0a6cdc));',
+      'background:var(--ui-gradient,linear-gradient(118deg,#001B48,#02457A 55%,#018ABE 130%));',
       'box-shadow:inset 0 1px 0 rgba(255,255,255,.18),',
       'var(--ui-shadow-press,0 6px 16px -6px rgba(19,80,127,.5));',
       'transition:transform 140ms cubic-bezier(.23,1,.32,1),filter 180ms ease,',
@@ -125,7 +125,7 @@
       'border:1px solid var(--ui-warn-line,#f3d9a4);box-shadow:none}',
       /* Home is secondary: white with navy ink, so it can never be mistaken for
          Sign out, which ends the session and is the one that must stand out. */
-      '.home{background:rgba(255,255,255,.85);color:var(--ui-navy,#0b2e6f);',
+      '.home{background:rgba(255,255,255,.85);color:var(--ui-navy,#001B48);',
       'border:1px solid var(--ui-line-2,rgba(11,29,48,.16));box-shadow:none;',
       'display:inline-flex;align-items:center;gap:6px;padding:7px 13px 7px 11px}',
       '.home svg{width:15px;height:15px}',

@@ -495,25 +495,25 @@
        and the web font they declared - are gone by the time this is drawn. */
     var font = "font-family:'Segoe UI Variable Text','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;" +
       '-webkit-font-smoothing:antialiased;';
-    var body = el('body', 'margin:0;padding:0 16px;min-height:100vh;background:#f4f7fb;' +
-      'background-image:radial-gradient(1200px 640px at 8% -16%,rgba(10,108,220,.20),transparent 62%),' +
-      'radial-gradient(1000px 580px at 96% -10%,rgba(6,182,212,.17),transparent 60%);' + font);
+    var body = el('body', 'margin:0;padding:0 16px;min-height:100vh;background:#f8fbfd;' +
+      'background-image:radial-gradient(1200px 640px at 8% -16%,rgba(1,138,190,.16),transparent 62%),' +
+      'radial-gradient(1000px 580px at 96% -10%,rgba(2,69,122,.12),transparent 60%);' + font);
     var card = el('div', 'box-sizing:border-box;max-width:660px;margin:12vh auto;padding:28px 30px;' +
-      'border-radius:16px;background:rgba(255,255,255,.92);color:#0b1d30;font-size:15.5px;' +
-      'line-height:1.6;box-shadow:0 0 0 1px rgba(11,29,48,.07),0 2px 6px rgba(10,44,77,.06),' +
-      '0 26px 54px -22px rgba(10,44,77,.32)');
+      'border-radius:16px;background:rgba(255,255,255,.92);color:#001B48;font-size:15.5px;' +
+      'line-height:1.6;box-shadow:0 0 0 1px rgba(2,69,122,.12),0 2px 6px rgba(0,27,72,.06),' +
+      '0 26px 54px -22px rgba(0,27,72,.32)');
     card.id = 'sky-lock';
     card.setAttribute('role', 'alert');
 
-    card.appendChild(el('div', 'font-weight:800;font-size:13px;letter-spacing:.16em;color:#0b2e6f', 'SKYWORTH 创维'));
+    card.appendChild(el('div', 'font-weight:800;font-size:13px;letter-spacing:.16em;color:#001B48', 'SKYWORTH 创维'));
     card.appendChild(el('h1', 'margin:10px 0;font-size:23px;font-weight:650;letter-spacing:-.015em;line-height:1.3',
       'This copy of ' + PRODUCT + ' has been altered'));
     card.appendChild(el('p', 'margin:0 0 12px',
       'It only runs as published. The SKYWORTH name and logo, the product name and the credits are part ' +
       'of every page, and they cannot be changed, hidden or covered in the browser.'));
 
-    var found = el('p', 'margin:0 0 12px;color:#22384f');
-    found.appendChild(el('b', 'color:#0b1d30', 'Found: '));
+    var found = el('p', 'margin:0 0 12px;color:#02457A');
+    found.appendChild(el('b', 'color:#001B48', 'Found: '));
     var reason = el('span', '', WHY[why] || why);
     reason.id = 'sky-lock-why';
     reason.setAttribute('data-why', why);
@@ -526,14 +526,14 @@
       : 'Reload the sign-in page to carry on, as it was published.'));
 
     var go = el('a', 'display:inline-block;padding:11px 20px;border-radius:10px;color:#fff;font-weight:600;' +
-      'text-decoration:none;background:linear-gradient(118deg,#0b2e6f 0%,#0a52b5 48%,#0a6cdc 100%);' +
-      'box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 6px 16px -6px rgba(19,80,127,.5)',
+      'text-decoration:none;background:linear-gradient(118deg,#001B48 0%,#02457A 55%,#018ABE 130%);' +
+      'box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 20px -6px rgba(1,138,190,.5)',
       signedIn ? 'Sign in again' : 'Reload the sign-in page');
     go.href = root + 'index.html' + (signedIn ? '?signedout=tampered' : '');
     card.appendChild(go);
 
-    card.appendChild(el('p', 'margin:22px 0 0;padding-top:14px;border-top:1px solid rgba(11,29,48,.09);' +
-      'font-size:13px;color:#42586e',
+    card.appendChild(el('p', 'margin:22px 0 0;padding-top:14px;border-top:1px solid rgba(2,69,122,.14);' +
+      'font-size:13px;color:#02457A',
       'Copyright © 2026 Rahul Kumbhar. All rights reserved. Skyworth Label Generator and ' +
       'Validator™ by Rahul Kumbhar. SKYWORTH, 创维 and the SKYWORTH logo are trademarks of ' +
       'Skyworth Group.'));

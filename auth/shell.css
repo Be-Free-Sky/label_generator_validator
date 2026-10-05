@@ -68,6 +68,9 @@ h1{margin:0;font-weight:700;letter-spacing:-.035em;line-height:1.03;
       box-shadow:var(--ui-glass-edge),var(--ui-shadow-3)}
 
 h2{margin:0;font-size:26px;font-weight:650;letter-spacing:-.025em;color:var(--ui-heading)}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  h2{background:var(--ui-gradient-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+}
 .sub{margin:6px 0 26px;font-size:15.5px;color:var(--ui-ink-3)}
 
 /* -------------------------------- fields -------------------------------- */

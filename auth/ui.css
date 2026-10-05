@@ -44,72 +44,71 @@
             'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif;
   --ui-mono:'Geist Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
 
-  /* ---------------------------------------------------------------- ink
-     VIBRANT AND READABLE, 2026-10-05 - asked for in those words. Every ink
-     leans blue instead of grey, and every one is measured, not chosen by eye.
-     On white:
-       ink 17.6:1   ink-2 12.6:1   ink-3 8.2:1   ink-4 5.7:1 (5.3 on the page)
-     The secondary greys this replaced were 7.4:1 - the new ones are BOTH
-     more colourful and easier to read. */
-  --ui-ink:#0a1931;
-  --ui-ink-2:#1b3358;
-  --ui-ink-3:#34507a;
-  --ui-ink-4:#4d6890;
-  /* Headings: a royal blue rather than near-black, 10.5:1. */
-  --ui-heading:#0b3a8c;
+  /* ------------------------------------------------------------- colour
+     THREE COLOURS, 2026-10-05, the owner's choice from their palette card:
 
-  /* -------------------------------------------------------------- brand
-     The Skyworth navy, and ONE accent - a vivid azure the whole product uses
-     for "this is the thing to press" and "this is selected": 5.0:1 as text,
-     and white on it is 5.0:1. Accent ink, for links and words on tints,
-     7.3:1 (6.5:1 on the tint).
+         1  #001B48   deep navy
+         2  #02457A   navy blue
+         3  #018ABE   cyan blue
 
-     Two gradients, read in opposite directions, and they must not be swapped:
-       --ui-gradient       under WHITE TEXT (buttons, the selected item). Its
-                           brightest stop is the accent, so white stays 5:1
-                           from end to end.
-       --ui-gradient-text  IS the text (the product name, big headings). It
-                           runs on to cyan, 3.7:1 at that end - fine for
-                           display type, which needs 3:1, and why it is kept
-                           to display type. */
-  --ui-navy:#0b2e6f;
-  --ui-accent:#0a6cdc;
-  --ui-accent-ink:#0a52b5;
-  --ui-accent-tint:#eaf3ff;
-  --ui-accent-line:#c3dafb;
-  --ui-cyan:#06b6d4;                /* decoration only: never under text */
-  --ui-gradient:linear-gradient(118deg,#0b2e6f 0%,#0a52b5 48%,#0a6cdc 100%);
-  --ui-gradient-text:linear-gradient(110deg,#0b2e6f 0%,#0a5fd0 52%,#0891b2 100%);
+     and NOT the card's two pale ones, #97CADB and #D6E8EE. Every tint below
+     is one of the three at low opacity over white, never those two.
+
+     Text is vibrant AND readable, measured on white:
+         1  16.8:1   body text, values
+         2   9.8:1   secondary text, labels, links, smaller headings
+         3   3.9:1   LARGE type only (24px, or 19px bold) - WCAG asks 3:1
+                     there and 4.5:1 below it, which 3 does not reach. So 3
+                     is for the big headings, rules, rings, icons and glows.
+     Everything else - status green, amber and red - keeps its meaning. */
+  --ui-ink:#001B48;
+  --ui-ink-2:#02457A;
+  --ui-ink-3:#02457A;
+  --ui-ink-4:#02457A;
+  --ui-heading:#02457A;
+
+  --ui-navy:#001B48;
+  --ui-accent:#018ABE;              /* rings, borders, icons, big headings */
+  --ui-accent-ink:#02457A;          /* links and accent words: 9.8:1 */
+  --ui-accent-tint:rgba(1,138,190,.08);
+  --ui-accent-line:rgba(1,138,190,.42);
+  --ui-cyan:#018ABE;
+  /* Two gradients, read in opposite directions, and they must not be swapped:
+       --ui-gradient       under WHITE TEXT. Colour 3 is set past the end
+                           (130%), so the brightest visible end is a blend of
+                           2 and 3 that white reads on at 5.6:1 - white on 3
+                           itself would be 3.9.
+       --ui-gradient-text  IS the text: 1 into 2 into 3, for display type
+                           only, where 3:1 is the bar. */
+  --ui-gradient:linear-gradient(118deg,#001B48 0%,#02457A 55%,#018ABE 130%);
+  --ui-gradient-text:linear-gradient(110deg,#001B48 0%,#02457A 50%,#018ABE 100%);
 
   /* ------------------------------------------------------------- status
-     Semantics stay where they were: green good, amber check, red stop - each
-     brighter, each 5:1 or better on its own tint. */
+     Semantics stay where they were: green good, amber check, red stop. */
   --ui-ok:#087a43;    --ui-ok-tint:#e9f9f0;    --ui-ok-line:#b2e6c9;
   --ui-warn:#a14a04;  --ui-warn-tint:#fff6e6;  --ui-warn-line:#f7d59a;
   --ui-err:#c41d3a;   --ui-err-tint:#fff0f2;   --ui-err-line:#f7c1cb;
 
   /* ----------------------------------------------------------- surfaces */
-  --ui-page:#f3f7fd;
+  --ui-page:#f8fbfd;
   --ui-surface:#ffffff;
-  --ui-surface-2:#f5f9ff;           /* wells, insets, quiet fills */
-  --ui-line:rgba(10,40,100,.10);    /* hairlines */
-  --ui-line-2:rgba(10,40,100,.18);  /* control borders */
+  --ui-surface-2:#f5f8fa;           /* 2 at 4% over white */
+  --ui-line:rgba(2,69,122,.14);     /* hairlines: 2 at 14% */
+  --ui-line-2:rgba(2,69,122,.26);   /* control borders */
 
-  /* The ground: wide fields of azure, cyan and royal blue over a cool
-     off-white, fixed to the window so content scrolls over it. Stronger than
-     before, still light: every text measurement above holds on it. */
+  /* The ground: wide, faint fields of 3 and 2 over near-white, fixed to the
+     window so content scrolls over it. */
   --ui-ground:
-    radial-gradient(1200px 660px at 8% -16%,rgba(10,108,220,.20),transparent 62%),
-    radial-gradient(1000px 580px at 96% -10%,rgba(6,182,212,.17),transparent 60%),
-    radial-gradient(900px 560px at 78% 46%,rgba(56,150,248,.07),transparent 64%),
-    radial-gradient(1100px 640px at 40% 120%,rgba(11,46,111,.10),transparent 62%),
-    #f3f7fd;
+    radial-gradient(1200px 660px at 8% -16%,rgba(1,138,190,.16),transparent 62%),
+    radial-gradient(1000px 580px at 96% -10%,rgba(2,69,122,.12),transparent 60%),
+    radial-gradient(1100px 640px at 40% 120%,rgba(0,27,72,.07),transparent 62%),
+    #f8fbfd;
 
   /* Glass: frosted, with the two details that make it read as a pane rather
      than a faded box - a 1px light inner edge, and a hairline outside it. */
-  --ui-glass-bg:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.64));
+  --ui-glass-bg:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.68));
   --ui-glass-blur:blur(20px) saturate(160%);
-  --ui-glass-edge:inset 0 1px 0 rgba(255,255,255,.85),0 0 0 1px rgba(10,40,100,.07);
+  --ui-glass-edge:inset 0 1px 0 rgba(255,255,255,.85),0 0 0 1px rgba(2,69,122,.10);
 
   /* --------------------------------------------------------------- shape
      ONE radius system, written down so it is followed everywhere:
@@ -122,13 +121,13 @@
 
   /* Shadows tinted to the navy, never grey-black, and layered: a tight one
      for the edge, a wide soft one for the lift. */
-  --ui-shadow-1:0 1px 2px rgba(11,46,111,.06),0 1px 1px rgba(11,46,111,.03);
-  --ui-shadow-2:0 1px 2px rgba(11,46,111,.06),0 12px 30px -14px rgba(11,46,111,.24);
-  --ui-shadow-3:0 2px 6px rgba(11,46,111,.07),0 28px 56px -22px rgba(11,46,111,.36);
-  /* Under the gradient buttons: an azure glow rather than a grey drop. */
-  --ui-shadow-press:0 1px 2px rgba(11,46,111,.22),0 8px 20px -6px rgba(10,108,220,.50);
+  --ui-shadow-1:0 1px 2px rgba(0,27,72,.06),0 1px 1px rgba(0,27,72,.03);
+  --ui-shadow-2:0 1px 2px rgba(0,27,72,.06),0 12px 30px -14px rgba(0,27,72,.24);
+  --ui-shadow-3:0 2px 6px rgba(0,27,72,.07),0 28px 56px -22px rgba(0,27,72,.36);
+  /* Under the gradient buttons: a glow of 3 rather than a grey drop. */
+  --ui-shadow-press:0 1px 2px rgba(0,27,72,.22),0 8px 20px -6px rgba(1,138,190,.50);
 
-  --ui-ring:0 0 0 3px rgba(10,108,220,.28);
+  --ui-ring:0 0 0 3px rgba(1,138,190,.35);
 
   /* -------------------------------------------------------------- motion
      Emil Kowalski's curves. ease-out for anything responding to the user,
@@ -142,7 +141,7 @@
 
 /* ------------------------------------------------------------------ base */
 
-::selection{background:rgba(10,108,220,.20);color:var(--ui-ink)}
+::selection{background:rgba(1,138,190,.22);color:var(--ui-ink)}
 
 /* A visible ring for keyboard users, never for a mouse click. */
 :focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px}
