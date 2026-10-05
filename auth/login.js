@@ -240,7 +240,7 @@
           (navigator.onLine === false
             ? 'This device appears to be offline. Reconnect and reload.'
             : 'Reload the page. If it keeps happening, the site may be ' +
-              'mid-deployment &mdash; wait a minute and try again.') +
+              'mid-deployment. Wait a minute and try again.') +
           '</span>',
           { shake: false });
       });

@@ -84,34 +84,55 @@
        cannot style out. */
     shadow = host.attachShadow({ mode: 'closed' });
 
+    /* On the shared design system (ui.css): custom properties cross into a
+       shadow root even past `all:initial`, so the bar takes the page's tokens
+       - with the values written out as fallbacks for a page without them. */
     var css = document.createElement('style');
     css.textContent = [
       ':host{all:initial}',
-      '*{box-sizing:border-box;font-family:Aptos,"Segoe UI",system-ui,sans-serif}',
-      '.bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.96);',
-      'border:1px solid #d7e3f2;border-radius:99px;padding:7px 8px 7px 15px;',
-      'box-shadow:0 4px 18px rgba(11,27,58,.16);backdrop-filter:blur(10px)}',
-      '.who{font-size:13px;color:#3d5a76;white-space:nowrap;max-width:46vw;',
-      'overflow:hidden;text-overflow:ellipsis}',
-      '.who b{color:#08203a;font-weight:700}',
-      'button{font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;',
-      'border-radius:99px;padding:8px 15px;border:0;color:#fff;',
-      'background:linear-gradient(135deg,#155e87,#0a2c4d);',
-      'box-shadow:0 2px 8px rgba(10,44,77,.28)}',
-      'button:hover{filter:brightness(1.12)}',
+      '*{box-sizing:border-box;font-family:var(--ui-font,"Segoe UI",system-ui,sans-serif);',
+      '-webkit-font-smoothing:antialiased}',
+      /* Glass, like every floating surface in the product: frosted, with a
+         light inner edge and a hairline outside it. */
+      '.bar{display:flex;align-items:center;gap:8px;min-width:0;',
+      'background:var(--ui-glass-bg,rgba(255,255,255,.9));',
+      '-webkit-backdrop-filter:var(--ui-glass-blur,blur(20px));backdrop-filter:var(--ui-glass-blur,blur(20px));',
+      'border-radius:999px;padding:6px 6px 6px 16px;',
+      'box-shadow:var(--ui-glass-edge,0 0 0 1px rgba(11,29,48,.08)),',
+      'var(--ui-shadow-3,0 16px 40px -16px rgba(10,44,77,.3))}',
+      '.who{font-size:13px;color:var(--ui-ink-3,#42586e);white-space:nowrap;min-width:0;',
+      'max-width:46vw;overflow:hidden;text-overflow:ellipsis}',
+      '.who b{color:var(--ui-ink,#0b1d30);font-weight:600}',
+      /* A press gives (scale .97, 140ms); hover only where a pointer hovers.
+         Buttons never shrink or wrap - on a phone the NAME gives way instead,
+         where "Sign out" used to break onto two lines. */
+      'button{font:inherit;font-size:13px;font-weight:600;cursor:pointer;flex:none;',
+      'white-space:nowrap;border-radius:999px;padding:8px 15px;border:0;color:#fff;',
+      'background:var(--ui-gradient,linear-gradient(118deg,#0a2c4d,#1a6fa8));',
+      'box-shadow:inset 0 1px 0 rgba(255,255,255,.18),',
+      'var(--ui-shadow-press,0 6px 16px -6px rgba(19,80,127,.5));',
+      'transition:transform 140ms cubic-bezier(.23,1,.32,1),filter 180ms ease,',
+      'background-color 180ms ease}',
+      'button:active{transform:scale(.97)}',
+      '@media (hover:hover) and (pointer:fine){button:hover{filter:brightness(1.08)}',
+      '.home:hover{background:var(--ui-accent-tint,#eef5fb);filter:none}}',
       '.warn{display:none;align-items:center;gap:10px;margin-bottom:9px;',
-      'background:#fffbeb;border:1px solid #fde68a;border-radius:99px;',
-      'padding:9px 10px 9px 16px;font-size:12.5px;color:#8a5209;',
-      'box-shadow:0 4px 18px rgba(11,27,58,.14)}',
+      'background:var(--ui-warn-tint,#fff8eb);border:1px solid var(--ui-warn-line,#f3d9a4);',
+      'border-radius:999px;padding:7px 7px 7px 16px;font-size:13px;color:var(--ui-warn,#8a5206);',
+      'box-shadow:var(--ui-shadow-2,0 10px 28px -14px rgba(10,44,77,.2))}',
       '.warn.on{display:flex}',
-      '.warn button{background:#fff;color:#8a5209;border:1px solid #fde68a;',
-      'box-shadow:none;font-weight:700}',
+      '.warn button{background:#fff;color:var(--ui-warn,#8a5206);',
+      'border:1px solid var(--ui-warn-line,#f3d9a4);box-shadow:none}',
       /* Home is secondary: white with navy ink, so it can never be mistaken for
          Sign out, which ends the session and is the one that must stand out. */
-      '.home{background:#fff;color:#0a2c4d;border:1px solid #cfe0f1;box-shadow:none;',
+      '.home{background:rgba(255,255,255,.85);color:var(--ui-navy,#0a2c4d);',
+      'border:1px solid var(--ui-line-2,rgba(11,29,48,.16));box-shadow:none;',
       'display:inline-flex;align-items:center;gap:6px;padding:7px 13px 7px 11px}',
-      '.home:hover{background:#eef5fc;filter:none}',
-      '.home svg{width:15px;height:15px}'
+      '.home svg{width:15px;height:15px}',
+      /* A phone: Home keeps its icon and drops its word, the name truncates. */
+      '@media (max-width:520px){.home span{display:none}.home{padding:7px 9px}',
+      '.bar{padding-left:13px}.who{max-width:38vw}}',
+      '@media (prefers-reduced-motion:reduce){button:active{transform:none}}'
     ].join('');
 
     var wrap = document.createElement('div');
@@ -218,6 +239,25 @@
     document.documentElement.style.setProperty('--sky-bar-space', space + 'px');
   }
 
+  /* ------------------------------------------- the height of the page header
+   *
+   * The same idea, for the top of the page. A generator's header is sticky,
+   * and its label preview column is sticky BENEATH it - at a fixed 98px, set
+   * when the header was one row. The header has since grown a second row (the
+   * label tabs), so the column slid under it by 30px and more, and by more
+   * again in Chinese, where the title and sub-line run longer.
+   *
+   * So the header's real height is published as --sky-header-h, and the
+   * column sits at that plus a gap. Like --sky-bar-space it changes nothing
+   * by itself; palette.css asks for it, with a fallback for the pages opened
+   * from disk, where this file does not run. */
+  var pageHeader = null;
+  function publishHeader() {
+    if (!pageHeader) return;
+    var h = Math.ceil(pageHeader.getBoundingClientRect().height);
+    if (h) document.documentElement.style.setProperty('--sky-header-h', h + 'px');
+  }
+
   /* ----------------------------------------------------------- integrity
    *
    * A TRIPWIRE, NOT A WALL. Anyone can change what runs in their own browser;
@@ -304,6 +344,12 @@
     publishSpace();
     window.addEventListener('resize', publishSpace);
     if (typeof ResizeObserver === 'function') new ResizeObserver(publishSpace).observe(host);
+
+    pageHeader = document.querySelector('body > header:not(.hero)');
+    if (pageHeader) {
+      publishHeader();
+      if (typeof ResizeObserver === 'function') new ResizeObserver(publishHeader).observe(pageHeader);
+    }
 
     ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) {
       window.addEventListener(ev, bump, { passive: true });

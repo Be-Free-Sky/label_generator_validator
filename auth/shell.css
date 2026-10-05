@@ -1,66 +1,27 @@
-/* shell.css — the login page only.
+/* shell.css — the sign-in page only.
  *
- * The house style, shared with the Label Validator and the Access Control
- * console: a thin white bar carrying the lockup, a large navy-to-teal gradient
- * headline on a pale ground, and the form presented as one more card with a
- * coloured spine rather than as a modal floating on a dark field.
+ * Built on the shared design system, auth/ui.css, which the page loads first:
+ * every colour, radius, shadow and curve here is one of its tokens. The build
+ * copies that file here from docs/assets/ in the clear, because this page
+ * loads before anyone has a key.
  *
- * The generator pages carry their own styling and are untouched by this file.
+ * The page is one decision - sign in - so it is the product's name on the
+ * brand ground, and a single glass pane holding the form. The generator pages
+ * carry their own styling and are untouched by this file.
  */
-
-:root{
-  --ink:#08203a; --ink-2:#123a5c; --muted:#3d5a76; --muted-2:#5b7791;
-  --navy:#0a2c4d; --navy-2:#061d33;
-  --brand:#10466e; --brand-600:#155e87; --brand-050:#e8f3f9;
-  --teal:#0891b2; --cyan:#06b6d4;
-
-  --ok:#047857; --ok-bg:#ecfdf5; --ok-line:#a7f3d0;
-  --warn-ink:#8a5209; --warn-bg:#fffbeb; --warn-line:#fde68a;
-  --danger:#be123c; --danger-ink:#9f1239; --danger-bg:#fff1f3; --danger-line:#fecdd3;
-
-  --page:#f3f7fd; --surface:#fff; --line:#e3ebf6; --line-2:#cbd9ea;
-  --r-l:20px; --r-m:13px; --r-s:10px;
-  --ff:Aptos,'Aptos Display','Open Sans','Segoe UI Variable Text','Segoe UI',
-      system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
-  --mono:'Cascadia Mono',Consolas,'SF Mono',Menlo,monospace;
-}
 
 *{box-sizing:border-box}
 html,body{height:100%}
+html{background:var(--ui-page)}
 
 body{
-  margin:0;min-height:100%;background:var(--page);color:var(--ink);
-  font-family:var(--ff);line-height:1.6;-webkit-font-smoothing:antialiased;
-  display:flex;flex-direction:column;position:relative;
-}
-
-/* A pale wash behind everything. Light enough that black text sits on it
-   comfortably, present enough that the page is not a flat sheet. */
-body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(940px 580px at 86% 2%, rgba(26,117,147,.16) 0%, transparent 60%),
-    radial-gradient(1040px 660px at 1% 24%, rgba(16,70,110,.13) 0%, transparent 58%),
-    radial-gradient(800px 580px at 58% 97%, rgba(19,93,128,.12) 0%, transparent 62%);
+  margin:0;min-height:100%;color:var(--ui-ink);
+  background:var(--ui-ground);background-attachment:fixed;
+  font-family:var(--ui-font);line-height:1.6;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;
 }
 
 .wrap{width:min(1180px,calc(100% - 44px));margin-inline:auto}
-
-/* ------------------------------- top bar -------------------------------- */
-
-.topbar{position:relative;z-index:3;background:rgba(255,255,255,.88);
-        backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-        border-bottom:1px solid var(--line)}
-.topbar-in{display:flex;align-items:center;gap:15px;height:84px}
-.wordmark{height:23px;width:auto;flex:none;color:var(--navy);display:block}
-.rule{width:1px;height:30px;flex:none;background:var(--line-2)}
-.badge{width:46px;height:46px;flex:none;border-radius:14px;display:grid;
-       place-items:center;color:#fff;
-       background:linear-gradient(145deg,var(--brand-600),var(--navy));
-       box-shadow:0 3px 10px rgba(10,47,107,.3)}
-.badge svg{width:24px;height:24px}
-.appname{font-size:19.5px;font-weight:750;letter-spacing:-.4px;color:var(--ink);
-         white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* --------------------------------- body --------------------------------- */
 
@@ -74,138 +35,150 @@ body::before{
       gap:clamp(32px,5vw,80px);align-items:center;min-width:0}
 .intro{min-width:0}
 
-h1{margin:0;font-weight:800;letter-spacing:-2.6px;line-height:1.02;
-   font-size:clamp(42px,5.8vw,76px)}
+h1{margin:0;font-weight:700;letter-spacing:-.035em;line-height:1.03;
+   font-size:clamp(42px,5.8vw,76px);color:var(--ui-navy)}
 
-/* The house gradient: deep navy into teal, left to right. A solid colour sits
-   underneath so the words never vanish if a browser declines the clip. */
-.grad{
-  background:linear-gradient(98deg,#082744 0%,#0d3f66 30%,#135d80 65%,#1a7593 100%);
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:var(--navy);
-}
+/* The gradient over a solid colour, so the words never vanish if a browser
+   declines the clip. */
+.grad{background:var(--ui-gradient-text);
+      -webkit-background-clip:text;background-clip:text;
+      -webkit-text-fill-color:transparent;color:var(--ui-navy)}
 
-.lede{margin:22px 0 0;font-size:clamp(16.5px,1.6vw,21px);line-height:1.65;
-      color:var(--muted);max-width:50ch}
+.lede{margin:20px 0 0;font-size:clamp(16.5px,1.6vw,20px);line-height:1.6;
+      color:var(--ui-ink-3);max-width:46ch}
 
 .points{list-style:none;margin:30px 0 0;padding:0;display:flex;
         flex-direction:column;gap:14px}
-.points li{display:flex;align-items:flex-start;gap:15px;font-size:16px;
-           color:var(--muted);line-height:1.55}
-.points svg{width:23px;height:23px;flex:none;margin-top:1px;color:var(--brand-600)}
-.points b{color:var(--ink-2);font-weight:700}
+.points li{display:flex;align-items:flex-start;gap:14px;font-size:15.5px;
+           color:var(--ui-ink-3);line-height:1.55}
+/* Each icon in a small tinted tile, so the three read as a set. */
+.points svg{width:34px;height:34px;flex:none;padding:7px;border-radius:10px;
+            color:var(--ui-accent-ink);background:rgba(255,255,255,.7);
+            box-shadow:var(--ui-glass-edge)}
+.points b{color:var(--ui-ink-2);font-weight:600}
 
 /* --------------------------------- card --------------------------------- */
 
-.card{position:relative;overflow:hidden;background:var(--surface);
-      border:1px solid var(--line);border-radius:var(--r-l);
-      padding:34px 34px 30px;display:flex;flex-direction:column;
-      box-shadow:0 1px 2px rgba(11,27,58,.04),0 14px 44px rgba(11,27,58,.1)}
-.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
-      background:linear-gradient(180deg,var(--brand-600),var(--teal))}
+/* The form, on glass: the brand ground shows through, the edge and the lift
+   come from the tokens. */
+.card{position:relative;background:var(--ui-glass-bg);
+      -webkit-backdrop-filter:var(--ui-glass-blur);backdrop-filter:var(--ui-glass-blur);
+      border-radius:var(--ui-r-card);padding:34px 34px 30px;
+      display:flex;flex-direction:column;
+      box-shadow:var(--ui-glass-edge),var(--ui-shadow-3)}
 
-h2{margin:0;font-size:28px;font-weight:800;letter-spacing:-.8px;color:var(--ink)}
-.sub{margin:9px 0 28px;font-size:16px;color:var(--muted-2)}
+h2{margin:0;font-size:26px;font-weight:650;letter-spacing:-.025em;color:var(--ui-ink)}
+.sub{margin:6px 0 26px;font-size:15.5px;color:var(--ui-ink-3)}
 
 /* -------------------------------- fields -------------------------------- */
 
-.field{display:flex;flex-direction:column;margin-bottom:17px}
-.field label{font-size:12.5px;font-weight:850;color:var(--brand);
-             text-transform:uppercase;letter-spacing:1.1px;margin-bottom:10px}
+/* Label above its box, in plain words. */
+.field{display:flex;flex-direction:column;margin-bottom:16px}
+.field label{font-size:13.5px;font-weight:600;color:var(--ui-ink-2);margin-bottom:7px}
 
-input{font-family:inherit;font-size:16.5px;color:var(--ink);padding:15px 17px;
-      width:100%;border:1.5px solid var(--line-2);border-radius:var(--r-s);
-      background:#fff;transition:border-color .15s,box-shadow .15s}
-input:focus{outline:none;border-color:var(--brand-600);
-            box-shadow:0 0 0 4px rgba(23,105,201,.13)}
+input{font-family:inherit;font-size:16px;color:var(--ui-ink);padding:13px 15px;
+      width:100%;border:1px solid var(--ui-line-2);border-radius:var(--ui-r-ctrl);
+      background:var(--ui-surface);box-shadow:var(--ui-shadow-1);
+      transition:border-color var(--ui-hover) ease,box-shadow var(--ui-hover) ease}
+input:hover{border-color:rgba(11,29,48,.26)}
+input:focus{outline:none;border-color:var(--ui-accent);box-shadow:var(--ui-ring)}
 /* Marks the field at fault after a failure, without shouting. */
-input.wrong{border-color:var(--danger-line);background:#fffafb}
-input.wrong:focus{border-color:var(--danger);box-shadow:0 0 0 4px rgba(190,18,60,.12)}
+input.wrong{border-color:var(--ui-err-line);background:#fffbfb}
+input.wrong:focus{border-color:var(--ui-err);box-shadow:0 0 0 3px rgba(180,35,44,.16)}
 
 /* Generated passwords are read off a slip in groups of four. A monospaced face
    and a little tracking make a mistyped character visible before you commit to
    a second of key derivation waiting to be told it was wrong. */
 .pw-wrap{position:relative}
-#password{font-family:var(--mono);font-size:16px;letter-spacing:.6px;padding-right:52px}
+#password{font-family:var(--ui-mono);font-size:15.5px;letter-spacing:.5px;padding-right:52px}
 
 .peek{position:absolute;top:50%;right:7px;transform:translateY(-50%);
-      width:34px;height:34px;padding:0;border:0;border-radius:9px;background:none;
-      color:var(--muted-2);cursor:pointer;display:grid;place-items:center;
-      transition:color .15s,background .15s}
-.peek:hover{color:var(--brand);background:var(--brand-050)}
+      width:34px;height:34px;padding:0;border:0;border-radius:8px;background:none;
+      color:var(--ui-ink-4);cursor:pointer;display:grid;place-items:center;
+      transition:color var(--ui-hover) ease,background-color var(--ui-hover) ease}
 .peek svg{width:18px;height:18px}
-.peek[aria-pressed="true"]{color:var(--brand)}
+.peek[aria-pressed="true"]{color:var(--ui-accent-ink)}
 
 /* -------------------------------- button -------------------------------- */
 
-.go{position:relative;margin-top:10px;font-family:inherit;font-size:17px;
-    font-weight:750;color:#fff;padding:17px 22px;border:0;border-radius:var(--r-s);
-    cursor:pointer;
-    background:linear-gradient(135deg,var(--brand-600) 0%,var(--navy) 88%);
-    box-shadow:0 2px 8px rgba(18,87,168,.26),0 10px 26px rgba(10,47,107,.22);
-    transition:filter .16s,box-shadow .18s,transform .08s}
-.go:hover:not(:disabled){filter:brightness(1.1);
-    box-shadow:0 3px 12px rgba(18,87,168,.34),0 14px 34px rgba(10,47,107,.28)}
-.go:active:not(:disabled){transform:translateY(1px)}
+.go{position:relative;margin-top:10px;font-family:inherit;font-size:16px;
+    font-weight:600;letter-spacing:-.005em;color:#fff;padding:15px 22px;border:0;
+    border-radius:var(--ui-r-ctrl);cursor:pointer;background:var(--ui-gradient);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18),var(--ui-shadow-press);
+    transition:transform var(--ui-press) var(--ui-ease-out),filter var(--ui-hover) ease,
+               box-shadow var(--ui-hover) ease}
+/* The press: it gives the moment it is pressed, and comes back quickly. */
+.go:active:not(:disabled){transform:scale(.97)}
 .go:disabled{opacity:.6;cursor:default;box-shadow:none}
 
+/* A spinner that turns quickly reads as a faster sign-in than a slow one. */
 .spinner{display:none;position:absolute;top:50%;right:18px;width:17px;height:17px;
          margin-top:-8.5px;border:2px solid rgba(255,255,255,.36);border-top-color:#fff;
-         border-radius:50%;animation:spin .7s linear infinite}
+         border-radius:50%;animation:spin .6s linear infinite}
 .go.busy .spinner{display:block}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+@media (hover:hover) and (pointer:fine){
+  .peek:hover{color:var(--ui-accent-ink);background:var(--ui-accent-tint)}
+  .go:hover:not(:disabled){filter:brightness(1.08)}
+}
+
 /* -------------------------------- status -------------------------------- */
 
-.status{margin:18px 0 0;font-size:15px;text-align:center;color:var(--muted-2);
+.status{margin:18px 0 0;font-size:14.5px;text-align:center;color:var(--ui-ink-3);
         line-height:1.6}
 .status:empty{margin:0}
 
 /* Three weights of message, because they mean different things: something you
    typed, something that will pass on its own, something genuinely broken. */
 .status.error,.status.warn,.status.info{
-  text-align:left;padding:13px 15px;border-radius:var(--r-m);
+  text-align:left;padding:12px 14px;border-radius:var(--ui-r-ctrl);
   border:1px solid;font-weight:500}
-.status.error{color:var(--danger-ink);background:var(--danger-bg);border-color:var(--danger-line)}
-.status.warn {color:var(--warn-ink);  background:var(--warn-bg);  border-color:var(--warn-line)}
-.status.info {color:var(--ok);        background:var(--ok-bg);    border-color:var(--ok-line)}
-.status b{font-weight:700}
-.status .hint{display:block;margin-top:7px;font-weight:400;opacity:.9;font-size:14px}
-.status code{font-family:var(--mono);font-size:12px;background:rgba(11,27,58,.07);
-             border-radius:5px;padding:2px 7px;display:inline-block;margin-top:5px;
+.status.error{color:var(--ui-err);  background:var(--ui-err-tint);  border-color:var(--ui-err-line)}
+.status.warn {color:var(--ui-warn); background:var(--ui-warn-tint); border-color:var(--ui-warn-line)}
+.status.info {color:var(--ui-ok);   background:var(--ui-ok-tint);   border-color:var(--ui-ok-line)}
+.status b{font-weight:650}
+.status .hint{display:block;margin-top:6px;font-weight:400;opacity:.92;font-size:13.5px}
+.status code{font-family:var(--ui-mono);font-size:12px;background:rgba(11,29,48,.06);
+             border-radius:6px;padding:2px 7px;display:inline-block;margin-top:5px;
              word-break:break-all}
 
 /* A single shake on a rejected password. Enough to register as "that was
    wrong" without the page appearing to malfunction. */
-.card.nope{animation:shake .38s cubic-bezier(.36,.07,.19,.97)}
+.card.nope{animation:shake .36s var(--ui-ease-in-out)}
 @keyframes shake{
-  10%,90%{transform:translateX(-1.5px)}
-  20%,80%{transform:translateX(3px)}
-  30%,50%,70%{transform:translateX(-5px)}
-  40%,60%{transform:translateX(5px)}
+  15%,85%{transform:translateX(-2px)}
+  30%,70%{transform:translateX(4px)}
+  45%,55%{transform:translateX(-4px)}
 }
+
+/* The first paint, once. On the GRID, not the card: the shake swaps the
+   card's animation, and taking the class off again would replay an entrance
+   set on the card after every wrong password. `backwards` so nothing is held
+   once it ends. */
+.grid{animation:ui-rise var(--ui-enter) var(--ui-ease-out) backwards}
 
 /* ------------------------------ brand foot ------------------------------ */
 
 /* The wordmark, bottom-left, on the same left edge as the heading. .gate is
    flex:1, so this sits at the foot of the window and the page still fits one
    screen; on a short one it simply follows the form. */
+.wordmark{width:auto;flex:none;color:var(--ui-navy);display:block}
 .brandfoot{position:relative;z-index:1;padding:0 0 clamp(22px,4vh,40px)}
 .brandfoot .wordmark{height:clamp(24px,2.1vw,30px)}
 
 /* ------------------------------ responsive ------------------------------ */
 
 @media (max-width:940px){
-  .grid{grid-template-columns:minmax(0,1fr);gap:34px}
-  h1{font-size:clamp(32px,7.6vw,50px);letter-spacing:-1.4px}
+  .grid{grid-template-columns:minmax(0,1fr);gap:30px}
+  h1{font-size:clamp(32px,7.6vw,50px);letter-spacing:-.03em}
   .points{display:none}
   .gate{padding:32px 0 56px}
-  .appname{display:none}
 }
 
 @media (max-width:480px){
   .wrap{width:calc(100% - 32px)}
-  .card{padding:26px 22px 24px;border-radius:16px}
+  .card{padding:26px 22px 24px}
   h2{font-size:21px}
 }
 

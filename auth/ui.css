@@ -1,0 +1,146 @@
+/* ui.css - the design system every surface shares. 2026-10-05.
+
+   ONE SOURCE OF TRUTH for the look: type, colour, surfaces, radii, shadows and
+   motion. Each page keeps its own component rules and writes them against
+   these tokens, so the sign-in page, the landing page, the portal, the thirty
+   generators, the validator and the release notes read as one product.
+
+   It is TOKENS AND BASE ONLY - no component classes. The pages already use
+   names like .card, .chip and .wrap for different things, and a shared rule
+   for any of them would land on all of them at once.
+
+   Every name is --ui-*, for the same reason: the validator has its own --ink,
+   --line and --brand, and those must keep meaning what they mean there.
+
+   Reaches the sign-in page too: the build copies this file and the font to
+   auth/ in the clear, because that page loads before anyone has a key.
+
+   The references it follows (CLAUDE.md, UI rules):
+     Emil Kowalski - custom ease-out curves, UI motion under 300ms, a press
+       that scales to 0.97, hover only where there is a real pointer, motion
+       only on transform and opacity, and less of it on request.
+     Taste - one accent, one radius system, tinted shadows, no pure black or
+       white text, glass with an inner edge and a solid fallback. */
+
+/* ------------------------------------------------------------------ type */
+
+/* Geist, self-hosted: this app runs offline and its pages allow fonts from
+   their own origin only. One variable file covers every weight. Licence in
+   fonts/Geist-OFL.txt (SIL Open Font License 1.1). */
+@font-face{
+  font-family:'Geist';
+  src:url('fonts/Geist-Variable.woff2') format('woff2');
+  font-weight:100 900;font-style:normal;font-display:swap;
+}
+@font-face{
+  font-family:'Geist Mono';
+  src:url('fonts/GeistMono-Variable.woff2') format('woff2');
+  font-weight:100 900;font-style:normal;font-display:swap;
+}
+
+:root{
+  /* Chinese has no Geist glyphs; the system CJK face takes over per character. */
+  --ui-font:'Geist','Segoe UI Variable Text','Segoe UI',system-ui,-apple-system,
+            'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif;
+  --ui-mono:'Geist Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
+
+  /* ---------------------------------------------------------------- ink
+     Off-black navy, never #000. Measured on white:
+       900 16.2:1   700 10.6:1   500 6.9:1   400 5.2:1 (13px and up only) */
+  --ui-ink:#0b1d30;
+  --ui-ink-2:#22384f;
+  --ui-ink-3:#42586e;
+  --ui-ink-4:#5a6e83;
+
+  /* -------------------------------------------------------------- brand
+     The Skyworth navy, and ONE accent - the blue the whole product uses for
+     "this is the thing to press" and "this is selected". Accent text 5.4:1.
+     The gradient runs navy into that blue and is the premium touch: primary
+     buttons, the selected item, the product name. Nowhere else. */
+  --ui-navy:#0a2c4d;
+  --ui-accent:#1a6fa8;
+  --ui-accent-ink:#13507f;          /* links, accent text on tints: 8.1:1 */
+  --ui-accent-tint:#eef5fb;
+  --ui-accent-line:#cfe0ef;
+  --ui-gradient:linear-gradient(118deg,#0a2c4d 0%,#13507f 52%,#1a6fa8 100%);
+  --ui-gradient-text:linear-gradient(110deg,#0a2c4d 0%,#13507f 56%,#1a6fa8 100%);
+
+  /* ------------------------------------------------------------- status
+     Semantics stay where they were: green good, amber check, red stop. */
+  --ui-ok:#0e7a4a;    --ui-ok-tint:#ecf8f1;    --ui-ok-line:#bfe6cf;
+  --ui-warn:#8a5206;  --ui-warn-tint:#fff8eb;  --ui-warn-line:#f3d9a4;
+  --ui-err:#b4232c;   --ui-err-tint:#fdf1f1;   --ui-err-line:#f2c4c4;
+
+  /* ----------------------------------------------------------- surfaces */
+  --ui-page:#f4f7fb;
+  --ui-surface:#ffffff;
+  --ui-surface-2:#f7fafd;           /* wells, insets, quiet fills */
+  --ui-line:rgba(11,29,48,.09);     /* hairlines */
+  --ui-line-2:rgba(11,29,48,.16);   /* control borders */
+
+  /* The ground: two wide, faint fields of the brand blue and its teal over a
+     cool off-white, fixed to the window so content scrolls over it. */
+  --ui-ground:
+    radial-gradient(1200px 640px at 10% -14%,rgba(26,111,168,.14),transparent 62%),
+    radial-gradient(1000px 560px at 94% -8%,rgba(8,145,178,.10),transparent 60%),
+    radial-gradient(1100px 620px at 50% 118%,rgba(10,44,77,.07),transparent 62%),
+    #f4f7fb;
+
+  /* Glass: frosted, with the two details that make it read as a pane rather
+     than a faded box - a 1px light inner edge, and a hairline outside it. */
+  --ui-glass-bg:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.64));
+  --ui-glass-blur:blur(20px) saturate(160%);
+  --ui-glass-edge:inset 0 1px 0 rgba(255,255,255,.85),0 0 0 1px rgba(11,29,48,.06);
+
+  /* --------------------------------------------------------------- shape
+     ONE radius system, written down so it is followed everywhere:
+       containers (cards, panels, sections, dialogs)  16px
+       controls   (buttons, inputs, menus)            10px
+       selections (segments, tabs, chips, the bar)    pill */
+  --ui-r-card:16px;
+  --ui-r-ctrl:10px;
+  --ui-r-pill:999px;
+
+  /* Shadows tinted to the navy, never grey-black, and layered: a tight one
+     for the edge, a wide soft one for the lift. */
+  --ui-shadow-1:0 1px 2px rgba(10,44,77,.05),0 1px 1px rgba(10,44,77,.03);
+  --ui-shadow-2:0 1px 2px rgba(10,44,77,.05),0 10px 28px -14px rgba(10,44,77,.20);
+  --ui-shadow-3:0 2px 6px rgba(10,44,77,.06),0 26px 54px -22px rgba(10,44,77,.32);
+  --ui-shadow-press:0 1px 2px rgba(10,44,77,.22),0 6px 16px -6px rgba(19,80,127,.50);
+
+  --ui-ring:0 0 0 3px rgba(26,111,168,.24);
+
+  /* -------------------------------------------------------------- motion
+     Emil Kowalski's curves. ease-out for anything responding to the user,
+     ease-in-out for things moving on screen; never ease-in. */
+  --ui-ease-out:cubic-bezier(.23,1,.32,1);
+  --ui-ease-in-out:cubic-bezier(.77,0,.175,1);
+  --ui-press:140ms;                 /* button press feedback */
+  --ui-hover:180ms;                 /* colour and lift on hover */
+  --ui-enter:320ms;                 /* first appearance of a section */
+}
+
+/* ------------------------------------------------------------------ base */
+
+::selection{background:rgba(26,111,168,.18);color:var(--ui-ink)}
+
+/* A visible ring for keyboard users, never for a mouse click. */
+:focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px}
+
+/* The entrance every surface uses for its first paint: a short rise, once.
+   Opacity and transform only - nothing that makes the browser lay out again. */
+@keyframes ui-rise{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+
+/* Less motion means less MOVEMENT, not none: fades and colour changes stay,
+   anything that travels or scales does not. */
+@media (prefers-reduced-motion:reduce){
+  :root{--ui-press:0ms;--ui-enter:0ms}
+}
+
+/* Glass needs something solid to fall back on where transparency is unwanted. */
+@media (prefers-reduced-transparency:reduce){
+  :root{--ui-glass-bg:rgba(255,255,255,.97);--ui-glass-blur:none}
+}

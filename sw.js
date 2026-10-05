@@ -70,6 +70,8 @@ const PLAINTEXT = new Set([
   '', 'index.html', 'sw.js', 'config.json', 'keyslots.json',
   'auth/crypt.js', 'auth/argon2.umd.min.js', 'auth/login.js', 'auth/shell.css',
   'auth/session.js', 'auth/guard.js',
+  'auth/ui.css', 'auth/fonts/Geist-Variable.woff2', 'auth/fonts/GeistMono-Variable.woff2',
+  'auth/fonts/Geist-OFL.txt',
   '.nojekyll', 'favicon.ico'
 ]);
 
