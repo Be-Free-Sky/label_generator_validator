@@ -92,47 +92,52 @@
       ':host{all:initial}',
       '*{box-sizing:border-box;font-family:var(--ui-font,"Segoe UI",system-ui,sans-serif);',
       '-webkit-font-smoothing:antialiased}',
-      /* Glass, like every floating surface in the product: frosted, with a
-         light inner edge and a hairline outside it. */
+      /* The reference's header glass: three quarters white, a strong blur
+         with the colour lifted, a navy hairline, a shadow that falls down. */
       '.bar{display:flex;align-items:center;gap:8px;min-width:0;',
       'background:var(--ui-glass-bg,rgba(255,255,255,.9));',
-      '-webkit-backdrop-filter:var(--ui-glass-blur,blur(20px));backdrop-filter:var(--ui-glass-blur,blur(20px));',
+      '-webkit-backdrop-filter:var(--ui-glass-blur,blur(18px) saturate(165%));',
+      'backdrop-filter:var(--ui-glass-blur,blur(18px) saturate(165%));',
       'border-radius:999px;padding:6px 6px 6px 16px;',
-      'box-shadow:var(--ui-glass-edge,0 0 0 1px rgba(11,29,48,.08)),',
-      'var(--ui-shadow-3,0 16px 40px -16px rgba(10,44,77,.3))}',
-      '.who{font-size:13px;color:var(--ui-ink-3,#42586e);white-space:nowrap;min-width:0;',
+      'box-shadow:var(--ui-glass-edge,0 0 0 1px rgba(2,69,122,.09)),',
+      'var(--ui-shadow-3,0 22px 46px -22px rgba(0,27,72,.34))}',
+      '.who{font-size:13px;color:var(--ui-ink-3,#4F6A88);white-space:nowrap;min-width:0;',
       'max-width:46vw;overflow:hidden;text-overflow:ellipsis}',
-      '.who b{color:var(--ui-ink,#0b1d30);font-weight:600}',
-      /* A press gives (scale .97, 140ms); hover only where a pointer hovers.
-         Buttons never shrink or wrap - on a phone the NAME gives way instead,
-         where "Sign out" used to break onto two lines. */
-      'button{font:inherit;font-size:13px;font-weight:600;cursor:pointer;flex:none;',
+      '.who b{color:var(--ui-ink,#001B48);font-weight:600}',
+      /* The reference's pill button, in the display face, on the deep
+         gradient with the cyan glow. A press gives; a lift and a brighter
+         glow only where a pointer hovers. Buttons never shrink or wrap - on a
+         phone the NAME gives way instead, where "Sign out" used to break onto
+         two lines. */
+      'button{font:inherit;font-family:var(--ui-display,var(--ui-font,"Segoe UI",system-ui,sans-serif));',
+      'font-size:13px;font-weight:600;cursor:pointer;flex:none;',
       'white-space:nowrap;border-radius:999px;padding:8px 15px;border:0;color:#fff;',
-      'background:var(--ui-gradient,linear-gradient(118deg,#0a2c4d,#1a6fa8));',
-      'box-shadow:inset 0 1px 0 rgba(255,255,255,.18),',
-      'var(--ui-shadow-press,0 6px 16px -6px rgba(19,80,127,.5));',
-      'transition:transform 140ms cubic-bezier(.23,1,.32,1),filter 180ms ease,',
-      'background-color 180ms ease}',
+      'background:var(--ui-gradient,linear-gradient(115deg,#02457A,#016E99 58%,#0180B1));',
+      'box-shadow:var(--ui-shadow-press,0 10px 24px -12px rgba(1,110,153,.65));',
+      'transition:transform 250ms cubic-bezier(.22,.61,.36,1),filter 250ms cubic-bezier(.22,.61,.36,1),',
+      'box-shadow 250ms cubic-bezier(.22,.61,.36,1),background-color 250ms cubic-bezier(.22,.61,.36,1)}',
+      'button:active{transform:scale(.97);transition-duration:140ms}',
+      '@media (hover:hover) and (pointer:fine){button:hover{transform:translateY(-1px);filter:brightness(1.06);',
+      'box-shadow:var(--ui-glow,0 18px 46px -16px rgba(1,138,190,.55))}',
       'button:active{transform:scale(.97)}',
-      '@media (hover:hover) and (pointer:fine){button:hover{filter:brightness(1.08)}',
-      '.home:hover{background:var(--ui-accent-tint,#eef5fb);filter:none}}',
+      '.home:hover{background:var(--ui-accent-tint,#EDF7FB);filter:none;box-shadow:none}}',
       '.warn{display:none;align-items:center;gap:10px;margin-bottom:9px;',
       'background:var(--ui-warn-tint,#fff8eb);border:1px solid var(--ui-warn-line,#f3d9a4);',
       'border-radius:999px;padding:7px 7px 7px 16px;font-size:13px;color:var(--ui-warn,#8a5206);',
-      'box-shadow:var(--ui-shadow-2,0 10px 28px -14px rgba(10,44,77,.2))}',
+      'box-shadow:var(--ui-shadow-2,0 6px 18px -8px rgba(0,27,72,.22))}',
       '.warn.on{display:flex}',
       '.warn button{background:#fff;color:var(--ui-warn,#8a5206);',
       'border:1px solid var(--ui-warn-line,#f3d9a4);box-shadow:none}',
       /* Home is secondary: white with navy ink, so it can never be mistaken for
          Sign out, which ends the session and is the one that must stand out. */
-      '.home{background:rgba(255,255,255,.85);color:var(--ui-navy,#0a2c4d);',
-      'border:1px solid var(--ui-line-2,rgba(11,29,48,.16));box-shadow:none;',
+      '.home{background:rgba(255,255,255,.85);color:var(--ui-navy-2,#02457A);',
+      'border:1px solid var(--ui-line-2,rgba(2,69,122,.22));box-shadow:none;',
       'display:inline-flex;align-items:center;gap:6px;padding:7px 13px 7px 11px}',
       '.home svg{width:15px;height:15px}',
       /* A phone: Home keeps its icon and drops its word, the name truncates. */
       '@media (max-width:520px){.home span{display:none}.home{padding:7px 9px}',
       '.bar{padding-left:13px}.who{max-width:38vw}}',
-      '@media (prefers-reduced-motion:reduce){button:active{transform:none}}'
+      '@media (prefers-reduced-motion:reduce){button:active,button:hover{transform:none}}'
     ].join('');
 
     var wrap = document.createElement('div');

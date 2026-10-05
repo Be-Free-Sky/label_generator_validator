@@ -5,139 +5,215 @@
    these tokens, so the sign-in page, the landing page, the portal, the thirty
    generators, the validator and the release notes read as one product.
 
-   It is TOKENS AND BASE ONLY - no component classes. The pages already use
-   names like .card, .chip and .wrap for different things, and a shared rule
-   for any of them would land on all of them at once.
+   THE REFERENCE (CLAUDE.md, UI rules) is the pair of sites in
+   D:\Programming\Projects\product_management-main and quality_engineering-main
+   - one design, two sets of copy. Every value below is theirs unless a
+   comment says why not: their palette #001B48 #02457A #018ABE #97CADB
+   #D6E8EE, Sora over Inter with JetBrains Mono for labels, radii 10/16/24/32
+   with pills for anything you press, navy-tinted shadows with a negative
+   spread, and one ease, cubic-bezier(.22,.61,.36,1).
 
-   Every name is --ui-*, for the same reason: the validator has its own --ink,
-   --line and --brand, and those must keep meaning what they mean there.
+   Tokens and base, and a very few shared pieces, all named --ui-* / .ui-*.
+   The pages already use names like .card, .chip and .wrap for different
+   things, and the validator has its own --ink, --line and --brand; a shared
+   rule under any of those names would land on all of them at once.
 
-   Reaches the sign-in page too: the build copies this file and the font to
-   auth/ in the clear, because that page loads before anyone has a key.
-
-   The references it follows (CLAUDE.md, UI rules):
-     Emil Kowalski - custom ease-out curves, UI motion under 300ms, a press
-       that scales to 0.97, hover only where there is a real pointer, motion
-       only on transform and opacity, and less of it on request.
-     Taste - one accent, one radius system, tinted shadows, no pure black or
-       white text, glass with an inner edge and a solid fallback. */
+   Reaches the sign-in page too: the build copies this file and the fonts to
+   auth/ in the clear, because that page loads before anyone has a key. */
 
 /* ------------------------------------------------------------------ type */
 
-/* Geist, self-hosted: this app runs offline and its pages allow fonts from
-   their own origin only. One variable file covers every weight. Licence in
-   fonts/Geist-OFL.txt (SIL Open Font License 1.1). */
-@font-face{
-  font-family:'Geist';
-  src:url('fonts/Geist-Variable.woff2') format('woff2');
-  font-weight:100 900;font-style:normal;font-display:swap;
-}
-@font-face{
-  font-family:'Geist Mono';
-  src:url('fonts/GeistMono-Variable.woff2') format('woff2');
-  font-weight:100 900;font-style:normal;font-display:swap;
-}
+/* Self-hosted, never Google Fonts: this app runs offline and its pages allow
+   fonts from their own origin only. Variable files, so one file per script
+   covers every weight. Latin and Latin Extended - the second carries the
+   rupee sign (U+20B9) the MRP hints and checks print; a browser fetches it
+   only when a page draws one of its characters. Licences alongside, SIL OFL 1.1. */
+@font-face{font-family:'Sora';font-style:normal;font-weight:100 800;font-display:swap;
+  src:url('fonts/Sora-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Sora';font-style:normal;font-weight:100 800;font-display:swap;
+  src:url('fonts/Sora-latin-ext.woff2') format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url('fonts/Inter-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url('fonts/Inter-latin-ext.woff2') format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:100 800;font-display:swap;
+  src:url('fonts/JetBrainsMono-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:100 800;font-display:swap;
+  src:url('fonts/JetBrainsMono-latin-ext.woff2') format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 
 :root{
-  /* Chinese has no Geist glyphs; the system CJK face takes over per character. */
-  --ui-font:'Geist','Segoe UI Variable Text','Segoe UI',system-ui,-apple-system,
+  /* Chinese has none of these glyphs; the system CJK face takes over per
+     character, in every stack. */
+  --ui-font:'Inter','Segoe UI Variable Text','Segoe UI',system-ui,-apple-system,
             'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif;
-  --ui-mono:'Geist Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
+  --ui-display:'Sora','Inter','Segoe UI',system-ui,-apple-system,
+               'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif;
+  --ui-mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,
+            'Microsoft YaHei','PingFang SC',monospace;
 
   /* ---------------------------------------------------------------- ink
-     Off-black navy, never #000. Measured on white:
-       900 16.2:1   700 10.6:1   500 6.9:1   400 5.2:1 (13px and up only) */
-  --ui-ink:#0b1d30;
-  --ui-ink-2:#22384f;
-  --ui-ink-3:#42586e;
-  --ui-ink-4:#5a6e83;
+     The reference's navy text ramp. Measured on white / on the paper:
+       ink   #001B48 16.8 / 15.8     ink-2 #2E4A6B  9.1 / 8.6
+       ink-3 #4F6A88  5.6 / 5.3      ink-4 #587089  5.1 / 4.8
+     ink-4 is ours - the reference stops at ink-3 - for hints and notes. */
+  --ui-ink:#001B48;
+  --ui-ink-2:#2E4A6B;
+  --ui-ink-3:#4F6A88;
+  --ui-ink-4:#587089;
 
-  /* -------------------------------------------------------------- brand
-     The Skyworth navy, and ONE accent - the blue the whole product uses for
-     "this is the thing to press" and "this is selected". Accent text 5.4:1.
-     The gradient runs navy into that blue and is the premium touch: primary
-     buttons, the selected item, the product name. Nowhere else. */
-  --ui-navy:#0a2c4d;
-  --ui-accent:#1a6fa8;
-  --ui-accent-ink:#13507f;          /* links, accent text on tints: 8.1:1 */
-  --ui-accent-tint:#eef5fb;
-  --ui-accent-line:#cfe0ef;
-  --ui-gradient:linear-gradient(118deg,#0a2c4d 0%,#13507f 52%,#1a6fa8 100%);
-  --ui-gradient-text:linear-gradient(110deg,#0a2c4d 0%,#13507f 56%,#1a6fa8 100%);
+  /* -------------------------------------------------------------- brand */
+  --ui-navy:#001B48;
+  --ui-navy-2:#02457A;
+  --ui-accent:#018ABE;              /* fills, borders, rings, dots - not text: 3.9:1 */
+  --ui-accent-ink:#016E99;          /* accent TEXT, links: 5.7:1 */
+  --ui-sky:#97CADB;
+  --ui-mist:#D6E8EE;
+  --ui-accent-tint:#EDF7FB;         /* 7% of the accent on white */
+  --ui-accent-line:#C7E5F1;         /* 22% */
+
+  /* The reference's two gradients, as it uses them:
+       accent - cyan into sky - for the things that are DRAWN: the rule before
+                a kicker, the bar across a card, a dot, a progress line.
+       title  - navy into cyan - for display text: the product name, figures.
+     And one of ours. The reference also fills its primary button with the
+     accent gradient under white text, and white on the sky end is 1.8:1.
+     Here a button says Save or Download PDF to an operator who has to read
+     it, so text sits on the deep end of the same palette instead - the
+     reference's own hover state for that button, run from navy-2 - 5.7:1 to
+     9.8:1 everywhere under the words. */
+  --ui-grad-accent:linear-gradient(115deg,#018ABE 0%,#97CADB 100%);
+  --ui-gradient-text:linear-gradient(104deg,#001B48 0%,#02457A 40%,#018ABE 100%);
+  --ui-gradient:linear-gradient(115deg,#02457A 0%,#016E99 58%,#0180B1 100%);
+  --ui-grad-deep:linear-gradient(135deg,#001B48 0%,#02457A 52%,#018ABE 130%);
 
   /* ------------------------------------------------------------- status
-     Semantics stay where they were: green good, amber check, red stop. */
+     Semantics stay where they were: green good, amber check, red stop. The
+     reference's live dot is its green. */
   --ui-ok:#0e7a4a;    --ui-ok-tint:#ecf8f1;    --ui-ok-line:#bfe6cf;
   --ui-warn:#8a5206;  --ui-warn-tint:#fff8eb;  --ui-warn-line:#f3d9a4;
   --ui-err:#b4232c;   --ui-err-tint:#fdf1f1;   --ui-err-line:#f2c4c4;
+  --ui-live:#35D6A4;
 
   /* ----------------------------------------------------------- surfaces */
-  --ui-page:#f4f7fb;
+  --ui-page:#F2F9FC;                /* the reference's paper */
   --ui-surface:#ffffff;
-  --ui-surface-2:#f7fafd;           /* wells, insets, quiet fills */
-  --ui-line:rgba(11,29,48,.09);     /* hairlines */
-  --ui-line-2:rgba(11,29,48,.16);   /* control borders */
+  --ui-surface-2:#F2F9FC;           /* wells, insets, quiet fills */
+  --ui-line:rgba(2,69,122,.12);     /* hairlines */
+  --ui-line-2:rgba(2,69,122,.22);   /* control borders */
 
-  /* The ground: two wide, faint fields of the brand blue and its teal over a
-     cool off-white, fixed to the window so content scrolls over it. */
+  /* The ground: the reference's light hero - washes of sky and cyan over
+     white running down into paper - fixed to the window so content scrolls
+     over it. */
   --ui-ground:
-    radial-gradient(1200px 640px at 10% -14%,rgba(26,111,168,.14),transparent 62%),
-    radial-gradient(1000px 560px at 94% -8%,rgba(8,145,178,.10),transparent 60%),
-    radial-gradient(1100px 620px at 50% 118%,rgba(10,44,77,.07),transparent 62%),
-    #f4f7fb;
+    radial-gradient(95% 85% at 6% -6%,rgba(151,202,219,.46),transparent 56%),
+    radial-gradient(75% 70% at 96% 8%,rgba(1,138,190,.16),transparent 58%),
+    radial-gradient(85% 75% at 78% 104%,rgba(151,202,219,.32),transparent 60%),
+    linear-gradient(180deg,#FFFFFF 0%,#F2F9FC 58%,#E8F3F8 100%);
 
-  /* Glass: frosted, with the two details that make it read as a pane rather
-     than a faded box - a 1px light inner edge, and a hairline outside it. */
-  --ui-glass-bg:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.64));
-  --ui-glass-blur:blur(20px) saturate(160%);
-  --ui-glass-edge:inset 0 1px 0 rgba(255,255,255,.85),0 0 0 1px rgba(11,29,48,.06);
+  /* The reference's faint drafting grid, for the top of a page. Masked to a
+     soft oval so it has no edge. Used through .ui-grid below. */
+  --ui-grid-lines:
+    linear-gradient(rgba(2,69,122,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(2,69,122,.055) 1px,transparent 1px);
+
+  /* Glass, as the reference's header: white at three quarters, a strong blur
+     with the colour lifted, a navy hairline. */
+  --ui-glass-bg:rgba(255,255,255,.74);
+  --ui-glass-blur:blur(18px) saturate(165%);
+  --ui-glass-edge:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 1px rgba(2,69,122,.09);
 
   /* --------------------------------------------------------------- shape
-     ONE radius system, written down so it is followed everywhere:
-       containers (cards, panels, sections, dialogs)  16px
-       controls   (buttons, inputs, menus)            10px
-       selections (segments, tabs, chips, the bar)    pill */
-  --ui-r-card:16px;
+     The reference's radii:
+       sm 10  inputs, small tiles        md 16  stat strips, facts, panels
+       lg 24  cards                      xl 32  a framed picture
+     and pills for everything that is pressed or chosen: buttons, chips,
+     tags, tabs, the header. */
+  --ui-r-sm:10px;
+  --ui-r-md:16px;
+  --ui-r-lg:24px;
+  --ui-r-xl:32px;
+  --ui-r-card:24px;
   --ui-r-ctrl:10px;
   --ui-r-pill:999px;
 
-  /* Shadows tinted to the navy, never grey-black, and layered: a tight one
-     for the edge, a wide soft one for the lift. */
-  --ui-shadow-1:0 1px 2px rgba(10,44,77,.05),0 1px 1px rgba(10,44,77,.03);
-  --ui-shadow-2:0 1px 2px rgba(10,44,77,.05),0 10px 28px -14px rgba(10,44,77,.20);
-  --ui-shadow-3:0 2px 6px rgba(10,44,77,.06),0 26px 54px -22px rgba(10,44,77,.32);
-  --ui-shadow-press:0 1px 2px rgba(10,44,77,.22),0 6px 16px -6px rgba(19,80,127,.50);
+  /* Shadows tinted to the navy, never grey-black, with a negative spread so
+     the shadow sits under the thing rather than around it. */
+  --ui-shadow-1:0 1px 2px rgba(0,27,72,.05);
+  --ui-shadow-2:0 6px 18px -8px rgba(0,27,72,.22);
+  --ui-shadow-3:0 22px 46px -22px rgba(0,27,72,.34);
+  --ui-shadow-4:0 44px 88px -40px rgba(0,27,72,.52);
+  --ui-glow:0 18px 46px -16px rgba(1,138,190,.55);
+  --ui-glow-hover:0 26px 60px -18px rgba(1,138,190,.72);
+  --ui-shadow-press:0 10px 24px -12px rgba(1,110,153,.65);
 
-  --ui-ring:0 0 0 3px rgba(26,111,168,.24);
+  --ui-ring:0 0 0 3px rgba(1,138,190,.24);
 
   /* -------------------------------------------------------------- motion
-     Emil Kowalski's curves. ease-out for anything responding to the user,
-     ease-in-out for things moving on screen; never ease-in. */
-  --ui-ease-out:cubic-bezier(.23,1,.32,1);
-  --ui-ease-in-out:cubic-bezier(.77,0,.175,1);
+     ONE curve, the reference's, for everything. Its timings: a quarter of a
+     second for colour and a small lift, four tenths for a card, three
+     quarters for something arriving. The old names are kept as aliases so
+     no page has to change for the curve to. */
+  --ui-ease:cubic-bezier(.22,.61,.36,1);
+  --ui-ease-out:var(--ui-ease);
+  --ui-ease-in-out:var(--ui-ease);
   --ui-press:140ms;                 /* button press feedback */
-  --ui-hover:180ms;                 /* colour and lift on hover */
-  --ui-enter:320ms;                 /* first appearance of a section */
+  --ui-hover:250ms;                 /* colour and a small lift */
+  --ui-lift:400ms;                  /* a card rising under the pointer */
+  --ui-enter:750ms;                 /* first appearance */
 }
 
 /* ------------------------------------------------------------------ base */
 
-::selection{background:rgba(26,111,168,.18);color:var(--ui-ink)}
+::selection{background:#018ABE;color:#fff}
 
 /* A visible ring for keyboard users, never for a mouse click. */
 :focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px}
 
-/* The entrance every surface uses for its first paint: a short rise, once.
-   Opacity and transform only - nothing that makes the browser lay out again. */
+/* The entrance every surface uses for its first paint: the reference's
+   stagger step - a rise of 26px over three quarters of a second, once.
+   Opacity and transform only, nothing that makes the browser lay out again.
+   Pages run it with fill-mode `backwards`, never `both`: a fill that outlasts
+   the animation holds transform:none and silently cancels hover lifts. */
 @keyframes ui-rise{
-  from{opacity:0;transform:translateY(8px)}
+  from{opacity:0;transform:translateY(26px)}
   to{opacity:1;transform:none}
 }
+@keyframes ui-fade{from{opacity:0}to{opacity:1}}
+
+/* The live dot's ring, as on the reference's "open to" badge. */
+@keyframes ui-ping{75%,100%{transform:scale(2.6);opacity:0}}
+
+/* ---------------------------------------------------------- shared pieces */
+
+/* The kicker: a small mono label in capitals with the accent rule before it,
+   over a section's title. Chinese has no capitals to make and keeps its own
+   spacing, so the tracking comes off for it. */
+.ui-kicker{display:inline-flex;align-items:center;gap:12px;margin:0;
+  color:var(--ui-accent-ink);font-family:var(--ui-mono);font-size:.72rem;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase}
+.ui-kicker::before{content:"";width:34px;height:2px;border-radius:2px;flex:none;
+  background:var(--ui-grad-accent)}
+:lang(zh) .ui-kicker{letter-spacing:.08em}
+
+/* The drafting grid as a layer: put it first in a positioned box. Behind
+   everything and never a target for the pointer, so it can never stand over
+   the brand the seal in guard.js watches. */
+.ui-grid{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:var(--ui-grid-lines);background-size:72px 72px;
+  -webkit-mask-image:radial-gradient(120% 90% at 50% 20%,#000 18%,transparent 74%);
+  mask-image:radial-gradient(120% 90% at 50% 20%,#000 18%,transparent 74%)}
 
 /* Less motion means less MOVEMENT, not none: fades and colour changes stay,
    anything that travels or scales does not. */
 @media (prefers-reduced-motion:reduce){
-  :root{--ui-press:0ms;--ui-enter:0ms}
+  :root{--ui-press:0ms}
+  @keyframes ui-rise{from{opacity:0}to{opacity:1}}
 }
 
 /* Glass needs something solid to fall back on where transparency is unwanted. */

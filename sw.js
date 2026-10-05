@@ -70,8 +70,11 @@ const PLAINTEXT = new Set([
   '', 'index.html', 'sw.js', 'config.json', 'keyslots.json',
   'auth/crypt.js', 'auth/argon2.umd.min.js', 'auth/login.js', 'auth/shell.css',
   'auth/session.js', 'auth/guard.js',
-  'auth/ui.css', 'auth/fonts/Geist-Variable.woff2', 'auth/fonts/GeistMono-Variable.woff2',
-  'auth/fonts/Geist-OFL.txt',
+  'auth/ui.css',
+  'auth/fonts/Sora-latin.woff2', 'auth/fonts/Sora-latin-ext.woff2',
+  'auth/fonts/Inter-latin.woff2', 'auth/fonts/Inter-latin-ext.woff2',
+  'auth/fonts/JetBrainsMono-latin.woff2', 'auth/fonts/JetBrainsMono-latin-ext.woff2',
+  'auth/fonts/Sora-OFL.txt', 'auth/fonts/Inter-OFL.txt', 'auth/fonts/JetBrainsMono-OFL.txt',
   '.nojekyll', 'favicon.ico'
 ]);
 
