@@ -2,13 +2,13 @@
   "v": 1,
   "usernameSalt": "FKaOyESM1PN8/q6lkFAK9g==",
   "entry": "index.html",
-  "built": "2026-11-25T07:12:06.925Z",
+  "built": "2026-11-25T07:49:39.539Z",
   "approval": {
     "alg": "ECDSA-P256-SHA256",
     "pub": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEu7UxZUZvFLFZIdk+oID9ROXOL+8SDGRr0ymCiA/TCMdJKGamhYclwfOT7NP/O8JAwn+T6YQ3jumpXzfOxbLwnQ==",
     "priv": {
-      "n": "Haca1uXpmDpFefVm",
-      "c": "g9rRvTH4ZDsOZrBlG83ZaWzjinj5nPvPEFkeIra6yl6mqbgDturLhyrpVzp70CUKYER/Jp9zWE+GABhPGjZCbUWLaefYbF2/hCrOl1a+MT4l2bP9SwdI6gUCXYm6j9S95vhY3aVtTgWfqG7npZZleieUn5X1y/hZwK4zF1sLvnsidmcBHs9nfF6vGrxUuwTSwZxDSWCKFewnaDK0qrmxIeuItSJBgZ1pNq6cWr8amLQLkSELlP05owt/hEn6B3OMO3CdxFbfiK0="
+      "n": "NV1WJ1LfVgrK67x4",
+      "c": "QuPdCvW3JkX3XHm18XnLbu8DJeu0qgKx/8RDjRNqQUpDmN/6zUEc4B5Z6wnSftX22JVHukVD+o+jfrMgEGwMam/nAw1ApJL1s8x6w11zeNJlf+zD7fCorjXla8OX+o7P4DDmJAyLAoRiL+QJjTuFwWe0ZiCYlCHZ++MrvBVq+IQGp/IJ8nppdqBFqRlZ+DLbSPLpWxNoOSbFesfSbgHohUGxIEljLZ1Dftb/ri8O7uaHLtIGjhzrofuSbN6G6Kb4jd6XmC4jOp4="
     }
   }
 }
