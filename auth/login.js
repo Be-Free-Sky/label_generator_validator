@@ -435,6 +435,9 @@
       throw fatal('The application did not finish starting. Reload the page and sign in again.');
     }
 
+    // Before this account's session replaces whatever was there.
+    await settleLeftovers(session.slotId);
+
     try {
       await postToWorker(target, session);
     } catch (e) {
@@ -493,10 +496,94 @@
     });
   }
 
+  /* ------------------------------------------- what a session leaves behind
+   *
+   * Two things an operator's work writes into this browser, outside the
+   * encrypted application and in the clear:
+   *
+   *   localStorage  sky.approval.*  the field values sent for approval, and the
+   *                                 code that came back - kept so a refresh does
+   *                                 not lose an approval (vendor/approval.js)
+   *   IndexedDB     labelexport     label templates supplied for .lab / .btw
+   *                                 export (vendor/labelexport.js)
+   *
+   * Both belong to the session that wrote them. Once it is over - signed out,
+   * idle, revoked, locked, expired - they are somebody else's leftovers on a
+   * shared terminal, and every one of those endings arrives here. So this page
+   * removes them when no session is live, and again when a DIFFERENT account
+   * signs in over a live one.
+   *
+   * A live session keeps them. Opening the sign-in page in a second tab must
+   * not cost an operator the approval they are waiting on, and when the worker
+   * cannot say either way, nothing is removed.
+   * ---------------------------------------------------------------------- */
+
+  var LEFTOVER_KEYS  = 'sky.approval.';
+  var LEFTOVER_DB    = 'labelexport';
+  var LEFTOVER_STORE = 'templates';
+
+  /* 'none', 'unknown', or the live session's keyslot id. Asks the registered
+     worker directly, so a hard reload that bypassed it still gets an answer. */
+  function liveSession() {
+    if (!('serviceWorker' in navigator)) return Promise.resolve('none');
+    return navigator.serviceWorker.getRegistration().then(function (reg) {
+      var w = reg && (reg.active || reg.waiting || reg.installing);
+      if (!w) return 'none';
+      return new Promise(function (resolve) {
+        var channel = new MessageChannel();
+        var timer = setTimeout(function () { resolve('unknown'); }, 10000);
+        channel.port1.onmessage = function (ev) {
+          clearTimeout(timer);
+          var d = ev.data || {};
+          resolve(d.ok ? (d.slotId || 'unknown') : 'none');
+        };
+        try { w.postMessage({ type: 'whoami' }, [channel.port2]); }
+        catch (e) { clearTimeout(timer); resolve('unknown'); }
+      });
+    }).catch(function () { return 'unknown'; });
+  }
+
+  function forgetLeftovers() {
+    try {
+      for (var i = localStorage.length - 1; i >= 0; i--) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf(LEFTOVER_KEYS) === 0) localStorage.removeItem(k);
+      }
+    } catch (e) { /* storage blocked: then nothing was kept either */ }
+
+    /* Emptied rather than deleted: a delete waits for every tab still holding
+       the database open, and a generator tab holds it open. Opening it must not
+       create it on a browser that never had one, so a first-time upgrade is
+       abandoned. */
+    return new Promise(function (resolve) {
+      var rq;
+      try { rq = indexedDB.open(LEFTOVER_DB); } catch (e) { return resolve(); }
+      rq.onupgradeneeded = function () { rq.transaction.abort(); };
+      rq.onerror = function (ev) { if (ev && ev.preventDefault) ev.preventDefault(); resolve(); };
+      rq.onsuccess = function () {
+        var db = rq.result;
+        if (!db.objectStoreNames.contains(LEFTOVER_STORE)) { db.close(); return resolve(); }
+        var tx = db.transaction(LEFTOVER_STORE, 'readwrite');
+        tx.objectStore(LEFTOVER_STORE).clear();
+        tx.oncomplete = tx.onerror = tx.onabort = function () { db.close(); resolve(); };
+      };
+    });
+  }
+
+  /* `nextSlotId` is the account about to sign in, or null on arrival. */
+  function settleLeftovers(nextSlotId) {
+    return liveSession().then(function (live) {
+      if (live === 'none' || (nextSlotId && live !== 'unknown' && live !== nextSlotId)) {
+        return forgetLeftovers();
+      }
+    }).catch(function () { /* never in the way of signing in */ });
+  }
+
   /* --------------------------------------------------------------- start */
 
   btn.disabled = true;
   explainSignOut();
+  settleLeftovers(null);
   window.addEventListener('offline', function () {
     if (!busy) setStatus('This device is offline. Signing in needs a connection ' +
                          'the first time on each device.', 'warn');
