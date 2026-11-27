@@ -103,6 +103,14 @@
       '.who{font-size:13px;color:var(--ui-ink-3,#42586e);white-space:nowrap;min-width:0;',
       'max-width:46vw;overflow:hidden;text-overflow:ellipsis}',
       '.who b{color:var(--ui-ink,#0b1d30);font-weight:600}',
+      /* The role, coloured as Access Control colours it: admin the solid
+         gradient under white, viewer a cyan tint under colour 2. */
+      '.role{display:inline-block;margin-left:6px;padding:1px 9px;border-radius:999px;',
+      'font-size:11.5px;font-weight:600;text-transform:capitalize;vertical-align:1px;',
+      'border:1px solid transparent}',
+      '.role.admin{background:var(--ui-gradient,linear-gradient(118deg,#001B48,#02457A 55%,#018ABE 130%));color:#fff}',
+      '.role.viewer{background:rgba(1,138,190,.14);color:var(--ui-ink-2,#02457A);',
+      'border-color:rgba(1,138,190,.42)}',
       /* A press gives (scale .97, 140ms); hover only where a pointer hovers.
          Buttons never shrink or wrap - on a phone the NAME gives way instead,
          where "Sign out" used to break onto two lines. */
@@ -337,7 +345,10 @@
     b.textContent = me.username || 'operator';
     label.appendChild(b);
     if (me.role) {
-      label.appendChild(document.createTextNode(' · ' + me.role));
+      var role = document.createElement('span');
+      role.className = 'role ' + (me.role === 'admin' ? 'admin' : 'viewer');
+      role.textContent = me.role;
+      label.appendChild(role);
     }
 
     /* The label has its text now, so the bar has its real size. */
